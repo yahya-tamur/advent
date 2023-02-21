@@ -32,13 +32,12 @@ fn ascii_to_small(b: u8) -> u8 {
     }
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::open("input.txt")?;
-    let reader = BufReader::new(file);
-
+fn first<I>(it: I) -> u64
+where
+    I: Iterator<Item = String>,
+{
     let mut sum = 0;
-
-    for line in reader.lines().map(|x| x.unwrap()) {
+    for line in it {
         let bytes = line.as_bytes();
         let (fst, snd) = bytes.split_at(bytes.len() / 2);
         let fst = fst.iter().map(|&x| ascii_to_small(x)).collect::<Vec<u8>>();
@@ -50,8 +49,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for s in snd {
             s_map |= 1 << s;
         }
-        sum += count_trailing_zeroes(f_map & s_map);
+        sum += count_trailing_zeroes(f_map & s_map)
     }
-    println!("{}", sum);
+    sum
+}
+
+fn second<I>(it: I) -> u64
+where
+    I: Iterator<Item = String>,
+{
+    let mut sum = 0;
+    let mut acc: u64 = u64::MAX;
+    let mut ix = 0;
+    for line in it {
+        let sack = line
+            .as_bytes()
+            .iter()
+            .map(|&x| ascii_to_small(x))
+            .collect::<Vec<u8>>();
+        let mut sack_map: u64 = 0;
+        for s in sack {
+            sack_map |= 1 << s;
+        }
+        acc &= sack_map;
+        ix += 1;
+        if ix == 3 {
+            sum += count_trailing_zeroes(acc);
+            acc = u64::MAX;
+            ix = 0;
+        }
+    }
+    sum
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let file = File::open("input.txt")?;
+    let reader = BufReader::new(file);
+
+    println!("{}", second(reader.lines().map(|x| x.unwrap())));
     Ok(())
 }
