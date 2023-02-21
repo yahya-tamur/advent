@@ -1,6 +1,7 @@
 use std::collections::LinkedList;
 use std::fs;
 
+//set to 4 for part 1
 const DIST: u8 = 14;
 
 fn bitcount(mut u : u32) -> u32 {
