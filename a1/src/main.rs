@@ -5,7 +5,7 @@ use std::collections::BinaryHeap;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open("input.txt")?;
-    let mut reader = BufReader::new(file);
+    let reader = BufReader::new(file);
     let mut heap = BinaryHeap::from([Reverse(0);3]);
     let mut acc: i32 = 0;
 
