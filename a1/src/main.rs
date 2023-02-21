@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut heap = BinaryHeap::from([Reverse(0);3]);
     let mut acc: i32 = 0;
 
-    for line in &mut reader.lines().map(|a| a.unwrap()) {
+    for line in reader.lines().map(|a| a.unwrap()) {
       if line.is_empty() {
         heap.push(Reverse(acc));
         heap.pop();
