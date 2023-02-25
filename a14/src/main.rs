@@ -7,12 +7,12 @@ fn parse_line(s: &str) -> Vec<(usize, usize)> {
     let r = Regex::new(r"(?P<first>\d+),(?P<second>\d+)").unwrap();
 
     r.captures_iter(s)
-        .map(|caps| {
+        .map(|caps|
             (
                 caps.name("first").unwrap().as_str().parse().unwrap(),
                 caps.name("second").unwrap().as_str().parse().unwrap(),
             )
-        })
+        )
         .collect()
 }
 
