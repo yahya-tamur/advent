@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::collections::LinkedList;
+use std::collections::VecDeque;
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
 
@@ -18,7 +18,7 @@ const NUM_BOXES: usize = 9;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open("input.txt")?;
     let mut it = BufReader::new(file).lines();
-    let mut boxes: Vec<LinkedList<u8>> = vec![LinkedList::new(); NUM_BOXES];
+    let mut boxes: Vec<VecDeque<u8>> = vec![VecDeque::new(); NUM_BOXES];
 
     for _ in 0..MAX_HEIGHT {
         let line = it.next().unwrap()?;
@@ -40,13 +40,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let c = boxes[src].pop_front().unwrap();
             boxes[dest].push_front(c);
         }
-        */
+        // */
         /**/
         let mut split_end = boxes[src].split_off(n);
         std::mem::swap(&mut boxes[src], &mut split_end);
         std::mem::swap(&mut boxes[dest], &mut split_end);
         boxes[dest].append(&mut split_end);
-        //*/
+        // */
     }
     for bo in &boxes {
         print!("{}", *bo.front().unwrap() as char);

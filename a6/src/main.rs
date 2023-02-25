@@ -1,4 +1,4 @@
-use std::collections::LinkedList;
+use std::collections::VecDeque;
 use std::fs;
 
 //set to 4 for part 1
@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   let input = fs::read_to_string("input.txt").unwrap();
   let bytes = input.as_bytes();
   let mut mask = 0u32;
-  let mut queue: LinkedList<u8> = LinkedList::new();
+  let mut queue: VecDeque<u8> = VecDeque::new();
   for (i, b) in bytes.iter().enumerate() {
     let b = *b - b'a';
     mask ^= 1 << b;
