@@ -17,6 +17,8 @@ fn binary_search(ix: &Vec<usize>, src: impl Fn(usize) -> u8, n: u8) -> usize {
     left
 }
 
+type Transform = fn(usize, usize, usize) -> (usize, usize);
+
 fn main() {
     let file = File::open("inputs/08.txt").unwrap();
     let input: Vec<Vec<u8>> = BufReader::new(file)
@@ -26,22 +28,21 @@ fn main() {
     let n = input.len();
 
     //only works if forest is a square
-    #[allow(clippy::type_complexity)]
-    let transforms: [Box<dyn Fn(usize, usize) -> (usize, usize)>; 4] = [
-        Box::new(|i, j| (i, j)),
-        Box::new(|i, j| (i, n - 1 - j)),
-        Box::new(|i, j| (j, i)),
-        Box::new(|i, j| (n - 1 - j, i)),
+    let transforms: [Transform; 4] = [
+        |i, j, _n| (i, j),
+        |i, j, n| (i, n - 1 - j),
+        |i, j, _n| (j, i),
+        |i, j, n| (n - 1 - j, i),
     ];
 
     let mut mask = vec![vec![false; n]; n];
     for t in &transforms {
         for i in 0..n {
-            let (fi, fj) = t(i, 0);
+            let (fi, fj) = t(i, 0, n);
             let mut max = input[fi][fj];
             mask[fi][fj] = true;
             for j in 0..n {
-                let (i, j) = t(i, j);
+                let (i, j) = t(i, j, n);
                 if input[i][j] > max {
                     max = input[i][j];
                     mask[i][j] = true;
@@ -62,11 +63,11 @@ fn main() {
         for i in 0..n {
             let mut vec = vec![]; //contains j-values, t(i,n) to t(i,n)
             for j in 0..n {
-                let (ci, cj) = t(i, j);
+                let (ci, cj) = t(i, j, n);
                 let k = binary_search(
                     &vec,
                     |p| {
-                        let (r, s) = t(i, p);
+                        let (r, s) = t(i, p, n);
                         input[r][s]
                     },
                     input[ci][cj],
