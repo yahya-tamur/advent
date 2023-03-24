@@ -36,7 +36,7 @@ fn main() {
     ];
 
     let mut mask = vec![vec![false; n]; n];
-    for t in &transforms {
+    for t in transforms {
         for i in 0..n {
             let (fi, fj) = t(i, 0, n);
             let mut max = input[fi][fj];
@@ -59,7 +59,7 @@ fn main() {
     );
 
     let mut vals = vec![vec![1usize; n]; n];
-    for t in &transforms {
+    for t in transforms {
         for i in 0..n {
             let mut vec = vec![]; //contains j-values, t(i,n) to t(i,n)
             for j in 0..n {
