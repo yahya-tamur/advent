@@ -26,6 +26,7 @@ fn main() {
     let n = input.len();
 
     //only works if forest is a square
+    #[allow(clippy::type_complexity)]
     let transforms: [Box<dyn Fn(usize, usize) -> (usize, usize)>; 4] = [
         Box::new(|i, j| (i, j)),
         Box::new(|i, j| (i, n - 1 - j)),

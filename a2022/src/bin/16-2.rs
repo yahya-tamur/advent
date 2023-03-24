@@ -88,7 +88,7 @@ fn main() {
             .into_par_iter()
             .map(|n| {
                 let (state, node1, node2) = num_to_state(n);
-                if state + 1 == 1 << states && node2 < node1 {
+                if state + 1 == 1 << states || node2 < node1 {
                     return 0;
                 }
                 let mut maxval = 0;

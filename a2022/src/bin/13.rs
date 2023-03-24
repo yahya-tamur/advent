@@ -100,14 +100,14 @@ fn main() {
 
     let mut trees = vec![mtpl("[[2]]"), mtpl("[[6]]")];
     for line in it.map(|x| x.unwrap()) {
-      if line != "" {
-        trees.push(mtpl(&line));
-      }
+        if !line.is_empty() {
+            trees.push(mtpl(&line));
+        }
     }
     trees.sort();
     let l = trees.binary_search(&mtpl("[[2]]")).unwrap();
     let r = trees.binary_search(&mtpl("[[6]]")).unwrap();
-    println!("decoder key: {:?}", (l+1)*(r+1));
+    println!("decoder key: {:?}", (l + 1) * (r + 1));
     // */
 
     /*

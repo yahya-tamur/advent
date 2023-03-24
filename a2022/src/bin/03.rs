@@ -32,12 +32,9 @@ fn ascii_to_small(b: u8) -> u8 {
     }
 }
 
-fn first<I>(it: I) -> u64
-where
-    I: Iterator<Item = String>,
-{
+fn first(it: &[String]) -> u64 {
     let mut sum = 0;
-    for line in it {
+    for line in it.iter() {
         let bytes = line.as_bytes();
         let (fst, snd) = bytes.split_at(bytes.len() / 2);
         let fst = fst.iter().map(|&x| ascii_to_small(x)).collect::<Vec<u8>>();
@@ -54,14 +51,11 @@ where
     sum
 }
 
-fn second<I>(it: I) -> u64
-where
-    I: Iterator<Item = String>,
-{
+fn second(it: &[String]) -> u64 {
     let mut sum = 0;
     let mut acc: u64 = u64::MAX;
     let mut ix = 0;
-    for line in it {
+    for line in it.iter() {
         let sack = line
             .as_bytes()
             .iter()
@@ -85,7 +79,9 @@ where
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open("inputs/03.txt")?;
     let reader = BufReader::new(file);
+    let lines: Vec<String> = reader.lines().map(|x| x.unwrap()).collect();
 
-    println!("{}", second(reader.lines().map(|x| x.unwrap())));
+    println!("{}", first(&lines));
+    println!("{}", second(&lines));
     Ok(())
 }

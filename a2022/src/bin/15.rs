@@ -22,7 +22,7 @@ fn parse_lines(s: &str) -> Vec<(i64, i64, i64, i64)> {
 }
 
 //const SCANLINE: i64 = 2000000;
-const MAXSCAN: i64 =  4000000;
+const MAXSCAN: i64 = 4000000;
 
 //intervals are inclusive.
 fn beacon_to_interval(x1: i64, y1: i64, x2: i64, y2: i64, scan: i64) -> (i64, i64) {
@@ -36,10 +36,10 @@ fn main() {
 
     let mut line = 0;
     loop {
-        let mut intervals: Vec<(i64, i64)>  = beacons
+        let mut intervals: Vec<(i64, i64)> = beacons
             .iter()
             .map(|x| beacon_to_interval(x.0, x.1, x.2, x.3, line))
-            .filter(|(x,y)| x<=y)
+            .filter(|(x, y)| x <= y)
             .collect();
         intervals.sort();
         let mut min_overlap = 10;
@@ -47,24 +47,25 @@ fn main() {
             .into_iter()
             .map(|x| vec![x])
             .reduce(|mut v, w| {
-              let n = v.len() - 1;
-              let (vi, vj) = v[n];
-              let (wi, wj) = w[0];
-              if vj >= wi - 1 {
-                min_overlap = min(vj - wi, min_overlap);
-                v[n] = (vi, max(vj, wj));
-              } else {
-                v.push((wi,wj));
-              }
-              v
-            }).unwrap();
-            //println!("{}", line);
+                let n = v.len() - 1;
+                let (vi, vj) = v[n];
+                let (wi, wj) = w[0];
+                if vj >= wi - 1 {
+                    min_overlap = min(vj - wi, min_overlap);
+                    v[n] = (vi, max(vj, wj));
+                } else {
+                    v.push((wi, wj));
+                }
+                v
+            })
+            .unwrap();
+        //println!("{}", line);
         if ans.len() != 1 || line >= MAXSCAN {
             println!("{} {:?}", line, ans);
-            let (x,y) = (line, ans[0].1+1);
-            println!("{}", 4000000*y+x);
+            let (x, y) = (line, ans[0].1 + 1);
+            println!("{}", 4000000 * y + x);
             break;
         }
-        line += if min_overlap == 0 {1} else {min_overlap};
+        line += if min_overlap == 0 { 1 } else { min_overlap };
     }
 }
