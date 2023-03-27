@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 #[derive(Debug)]
 struct Rock {
     width: isize,
@@ -33,15 +35,18 @@ const ROCKS: [Rock; 5] = [
     },
 ];
 
-#[derive(Debug)]
 struct State {
     shaft: Vec<i8>,
     rock_index: usize,
     rock_top: usize,
     rock_offset: isize,
     shaft_height: usize,
+    winds: Vec<bool>,
+    wind_index: usize,
+    time: usize,
 }
 
+//is this really not in the standard library?
 fn off(a: i8, b: isize) -> i8 {
     if b < 0 {
         a << -b
@@ -52,10 +57,7 @@ fn off(a: i8, b: isize) -> i8 {
 
 impl State {
     fn add_rock(&mut self) {
-        self.rock_index += 1;
-        if self.rock_index == 5 {
-            self.rock_index = 0;
-        }
+        self.rock_index = (self.rock_index + 1) % 5;
         let rock = &ROCKS[self.rock_index];
         self.shaft.resize(self.shaft_height + 4 + rock.height, 0);
         self.rock_top = self.shaft.len() - 1;
@@ -92,13 +94,39 @@ impl State {
         self.shaft[self.rock_top - 3] |= off(rock.shape[3], self.rock_offset);
     }
 
-    fn init() -> Self {
+    fn init(s: &str) -> Self {
         State {
             rock_index: 4,
             rock_offset: 0,
             rock_top: 3,
             shaft: vec![0, 0, 0, 0b1111111],
             shaft_height: 3,
+            winds: s.chars().map(|c| c == '<').collect(),
+            wind_index: 0,
+            time: 0,
+        }
+    }
+
+    fn event_loop(&mut self, n: usize) {
+        let mut solidified_rocks = 0;
+        self.add_rock();
+        loop {
+            let is_left = self.winds[self.wind_index];
+            self.wind_index = (self.wind_index + 1) % self.winds.len();
+            self.time += 1;
+            if is_left {
+                self.try_move(-1, 0);
+            } else {
+                self.try_move(1, 0);
+            }
+            if !self.try_move(0, 1) {
+                self.solidify();
+                solidified_rocks += 1;
+                if solidified_rocks == n {
+                    return;
+                }
+                self.add_rock();
+            }
         }
     }
 }
@@ -120,64 +148,48 @@ impl std::fmt::Display for State {
                     write!(f, ".")?;
                 }
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         Ok(())
     }
 }
 
-fn event_loop(state: &mut State, events: impl Iterator<Item = bool>, n: usize) {
-    let mut solidified_rocks = 0;
-    state.add_rock();
-    for is_left in events {
-        if is_left {
-            state.try_move(-1, 0);
+fn big_event_loop(input: &str, bignum: usize) -> usize {
+    let mut s = State::init(input);
+    let mut snapshots: HashMap<(usize, Vec<i8>), (usize, usize)> = HashMap::new();
+    let n = s.winds.len() * ROCKS.len(); //really lcm
+    let mut num_rocks = 200;
+    s.event_loop(200);
+    loop {
+        s.event_loop(1);
+        num_rocks += 1;
+        let new_snapshot: (usize, Vec<i8>) = (
+            s.time % n,
+            s.shaft.iter().skip(s.shaft.len() - 50).copied().collect(),
+        );
+        if let Some((old_num_rocks, old_height)) = snapshots.get(&new_snapshot) {
+            let number_of_skips: usize = (bignum - old_num_rocks) / (num_rocks - old_num_rocks);
+            let remaining =
+                bignum - (old_num_rocks + number_of_skips * (num_rocks - old_num_rocks));
+            let current_height = s.shaft_height;
+            s.event_loop(remaining);
+            return (s.shaft_height - current_height)
+                + (current_height - old_height) * number_of_skips
+                + old_height
+                - 3;
         } else {
-            state.try_move(1, 0);
-        }
-        if !state.try_move(0, 1) {
-            state.solidify();
-            solidified_rocks += 1;
-            if solidified_rocks == n {
-                return;
-            }
-            state.add_rock();
+            snapshots.insert(new_snapshot, (num_rocks, s.shaft_height));
         }
     }
-}
-
-fn big_event_loop(events: impl Iterator<Item = bool>, mod_events: usize, bignum: usize) {
-    let mut s = State::init();
-    event_loop(&mut s, events, mod_events);
-    let tip: Vec<i8> = s
-        .shaft
-        .iter()
-        .skip(s.shaft.len() - 500)
-        .map(|x| *x)
-        .collect();
-    let prev_height = 
 }
 
 fn main() {
     let s: String = std::fs::read_to_string("inputs/17.txt").unwrap();
     let s = &s[0..s.len() - 1];
-    println!("{:?}", s.len());
-    let mut state = State {
-        rock_index: 4,
-        rock_offset: 0,
-        rock_top: 3,
-        shaft: vec![0, 0, 0, 0b1111111],
-        shaft_height: 3,
-    };
 
-    event_loop(
-        &mut state,
-        std::iter::repeat(s)
-            .map(|s| s.chars().map(|c| c == '<'))
-            .flatten(),
-        1000000000000,
-    );
+    let mut part1state = State::init(s);
+    part1state.event_loop(2022);
+    println!("part 1: {}", part1state.shaft_height - 3);
 
-    //println!("{}", state);
-    //println!("{:?}", state.shaft_height - 3);
+    println!("part 2: {}", big_event_loop(s, 1000000000000));
 }
