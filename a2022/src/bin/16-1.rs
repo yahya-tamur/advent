@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -41,8 +42,6 @@ fn parse(s: &str) -> Vec<Node> {
         .collect()
 }
 
-const MINUTES: usize = 30;
-
 fn main() {
     let s = std::fs::read_to_string("inputs/16.txt").unwrap();
     let graph: Vec<Node> = parse(&s);
@@ -58,9 +57,11 @@ fn main() {
 
     let (states, nodes) = (state_nodes.len(), graph.len());
 
+    let minutes = 30;
+
     let mut weights: Vec<usize> = vec![0; (1 << states) * nodes];
     let mut newweights: Vec<usize> = vec![0; (1 << states) * nodes];
-    for min in 0..MINUTES {
+    for min in 0..minutes {
         for (n, nw) in newweights.iter_mut().enumerate() {
             let (state, node) = (n / nodes, n % nodes);
             if state + 1 == 1 << states {
@@ -83,4 +84,84 @@ fn main() {
     }
     let begin = graph.iter().position(|n| n.name == "AA").unwrap();
     println!("{:?}", weights[begin]);
+    let minutes = 26;
+    let packednodes = (nodes + 1) * nodes / 2;
+    let num_to_state = |n: usize| {
+        let (state, nodepair) = (n / packednodes, n % packednodes);
+        let (node1, node2) = (nodepair / nodes, nodepair % nodes);
+        if node1 > node2 {
+            (state, nodes - node1, nodes - 1 - node2)
+        } else {
+            (state, node1, node2)
+        }
+    };
+    let state_to_num = |state: usize, node1: usize, node2: usize| {
+        let (node1, node2) = if node1 > node2 {
+            (node2, node1)
+        } else {
+            (node1, node2)
+        };
+        let (node1, node2) = if node1 >= (nodes + 1) / 2 {
+            (nodes - node1, nodes - 1 - node2)
+        } else {
+            (node1, node2)
+        };
+        state * packednodes + node1 * nodes + node2
+    };
+
+    let mut weights: Vec<usize> = vec![0; (1 << states) * packednodes];
+    for min in 0..minutes {
+        weights = (0..weights.len())
+            .into_par_iter()
+            .map(|n| {
+                let (state, node1, node2) = num_to_state(n);
+                if state + 1 == 1 << states || node2 < node1 {
+                    return 0;
+                }
+                let mut maxval = 0;
+                //for (n_state1, n_node1, n_weight1) in next_iter(node1, state) {
+                for &dest1 in &graph[node1].tunnels {
+                    for &dest2 in &graph[node2].tunnels {
+                        maxval = max(maxval, weights[state_to_num(state, dest1, dest2)]);
+                    }
+                    if let Some(s2) = state_nodes.get(&node2) {
+                        if 1 << s2 & state == 0 {
+                            maxval = max(
+                                maxval,
+                                weights[state_to_num(1 << s2 | state, dest1, node2)]
+                                    + min * graph[node2].flow,
+                            );
+                        }
+                    }
+                }
+                if let Some(s1) = state_nodes.get(&node1) {
+                    if 1 << s1 & state == 0 {
+                        for &dest2 in &graph[node2].tunnels {
+                            maxval = max(
+                                maxval,
+                                weights[state_to_num(1 << s1 | state, node1, dest2)]
+                                    + min * graph[node1].flow,
+                            );
+                        }
+                        if node1 != node2 {
+                            if let Some(s2) = state_nodes.get(&node2) {
+                                if 1 << s2 & state == 0 {
+                                    maxval = max(
+                                        maxval,
+                                        weights
+                                            [state_to_num(1 << s1 | 1 << s2 | state, node1, node2)]
+                                            + min * (graph[node1].flow + graph[node2].flow),
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+                maxval
+            })
+            .collect();
+        println!("{min}");
+    }
+    let begin = graph.iter().position(|n| n.name == "AA").unwrap();
+    println!("{:?}", weights[state_to_num(0, begin, begin)]);
 }
