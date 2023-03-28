@@ -14,7 +14,7 @@
 //all the cores.
 //
 //For this solution, using an out-of-the-box channel with
-//one 'state' per message was too slow -- too many messages
+//one 'message' per message was too slow -- too many messages
 //need to be sent, and the work needed per message was
 //comparitively quick.
 //
@@ -27,7 +27,7 @@
 //very short runtime start to end, so I don't have time to
 //see the cores spin up and then back down again, at least
 //on htop.
-//The load seems to be well-balanced from the 'logs' we see
+//The load seems to be well-balanced from the logs we see
 //though.
 //
 
@@ -38,6 +38,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 
+#[cfg(feature = "log16_2")]
 use std::time::SystemTime;
 
 //I feel like having this higher than the number of physical
@@ -83,6 +84,47 @@ fn parse(s: &str) -> Vec<Node> {
                 .collect(),
         })
         .collect()
+}
+
+struct Message {
+    score: usize,
+    node1: usize,
+    node2: usize,
+    time1: usize,
+    time2: usize,
+    state: u32,
+}
+
+struct MT {
+    waiting: u8,
+    max: usize,
+    messages: Vec<Message>,
+}
+
+#[cfg(feature = "log16_2")]
+#[derive(Default)]
+struct Logs {
+    states_processed: usize,
+    used_channel: usize,
+    put_into_channel: usize,
+    woke_up: usize,
+    waited: u128,
+}
+
+#[cfg(feature = "log16_2")]
+impl std::fmt::Display for Logs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "I processed {} states. ", self.states_processed)?;
+        write!(f, "I used the channel {} times. ", self.used_channel)?;
+        write!(
+            f,
+            "I put into the channel {} times. ",
+            self.put_into_channel
+        )?;
+        write!(f, "I woke up {} times. ", self.woke_up)?;
+        write!(f, "I waited {} milliseconds.", self.waited / 1_000_000)?;
+        Ok(())
+    }
 }
 
 fn main() {
@@ -160,70 +202,75 @@ fn main() {
     }
     println!("part 1: {max_score}");
 
-    type Message = (usize, usize, usize, usize, usize, u32);
-    let glob_max = Arc::new(Mutex::new(0));
-
-    type MT = (u8, Vec<Message>);
     let glob_states: Arc<(Mutex<MT>, Condvar)> = Arc::new((
-        Mutex::new((
-            0,
-            vec![(0, start, start, 0, 0, ((1 << nix.len()) - 1) ^ (1 << start))],
-        )),
+        Mutex::new(MT {
+            waiting: 0,
+            max: 0,
+            messages: vec![Message {
+                score: 0,
+                node1: start,
+                node2: start,
+                time1: 0,
+                time2: 0,
+                state: ((1 << nix.len()) - 1) ^ (1 << start),
+            }],
+        }),
         Condvar::new(),
     ));
 
     thread::scope(|s| {
         for _ in 0..NUM_THREADS {
             s.spawn(|| {
-                let mut states_processed = 0;
-                let mut needed_glob = 0;
-                let mut max_dumped_into_glob = 0;
-                let mut woke_up = 0;
-                let mut waited = 0;
+                #[cfg(feature = "log16_2")]
+                let mut logs = Logs::default();
 
                 let mut my_states = Vec::<Message>::new();
                 let mut my_max = 0;
                 let pair = Arc::clone(&glob_states);
                 loop {
-                    needed_glob += 1;
+                    #[cfg(feature = "log16_2")]
+                    {
+                        logs.used_channel += 1;
+                    }
                     {
                         let (lock, cv) = &*pair;
                         let mut mutex = lock.lock().unwrap();
-                        mutex.0 += 1;
+                        mutex.waiting += 1;
+                        #[cfg(feature = "log16_2")]
                         let started = SystemTime::now();
-                        while (*mutex.1).is_empty() {
-                            if mutex.0 == NUM_THREADS {
-                                waited += SystemTime::now()
-                                    .duration_since(started)
-                                    .unwrap()
-                                    .as_nanos();
+                        while (*mutex.messages).is_empty() {
+                            if mutex.waiting == NUM_THREADS {
+                                #[cfg(feature = "log16_2")]
                                 {
-                                    println!(
-                                        "I processed {states_processed} states. \
-                                            I needed the global channel {needed_glob} \
-                                            times. I put into the global channel \
-                                            {max_dumped_into_glob} times. I \
-                                            woke up {woke_up} times. I waited \
-                                            {} milliseconds.",
-                                        waited / 1_000_000
-                                    );
-                                    let mut l = glob_max.lock().unwrap();
-                                    *l = max(my_max, *l);
+                                    logs.waited += SystemTime::now()
+                                        .duration_since(started)
+                                        .unwrap()
+                                        .as_nanos();
+                                    println!("{logs}");
+                                }
+                                {
+                                    mutex.max = max(my_max, mutex.max);
                                 }
 
                                 cv.notify_all();
                                 return;
                             }
                             mutex = cv.wait(mutex).unwrap();
-                            woke_up += 1;
+                            #[cfg(feature = "log16_2")]
+                            {
+                                logs.woke_up += 1;
+                            }
                         }
-                        waited += SystemTime::now()
-                            .duration_since(started)
-                            .unwrap()
-                            .as_nanos();
-                        mutex.0 -= 1;
+                        #[cfg(feature = "log16_2")]
+                        {
+                            logs.waited += SystemTime::now()
+                                .duration_since(started)
+                                .unwrap()
+                                .as_nanos();
+                        }
+                        mutex.waiting -= 1;
                         for _ in 0..3 {
-                            if let Some(m) = mutex.1.pop() {
+                            if let Some(m) = mutex.messages.pop() {
                                 my_states.push(m);
                             } else {
                                 break;
@@ -231,34 +278,54 @@ fn main() {
                         }
                     }
 
-                    while let Some((score, node1, node2, time1, time2, state)) = my_states.pop() {
-                        states_processed += 1;
-                        for i in 0..nix.len() {
-                            if state & (1 << i) == 0 {
+                    while let Some(m) = my_states.pop() {
+                        #[cfg(feature = "log16_2")]
+                        {
+                            logs.states_processed += 1;
+                        }
+                        for newnode in 0..nix.len() {
+                            if m.state & (1 << newnode) == 0 {
                                 continue;
                             }
-                            let newtime1 = time1 + npaths[node1][i] + 1;
+                            let newtime1 = m.time1 + npaths[m.node1][newnode] + 1;
 
                             if newtime1 > 26 {
                                 continue;
                             }
 
-                            let newscore = score + graph[nix[i]].flow * (26 - newtime1);
-                            let newstate = state ^ (1 << i);
+                            let newscore = m.score + graph[nix[newnode]].flow * (26 - newtime1);
+                            let newstate = m.state ^ (1 << newnode);
                             if newstate == 0 {
                                 continue;
                             }
                             my_max = max(my_max, newscore);
-                            let new_message = if newtime1 > time2 {
-                                (newscore, node2, i, time2, newtime1, newstate)
+                            let new_message = if newtime1 > m.time2 {
+                                Message {
+                                    score: newscore,
+                                    node1: m.node2,
+                                    node2: newnode,
+                                    time1: m.time2,
+                                    time2: newtime1,
+                                    state: newstate,
+                                }
                             } else {
-                                (newscore, i, node2, newtime1, time2, newstate)
+                                Message {
+                                    score: newscore,
+                                    node1: newnode,
+                                    node2: m.node2,
+                                    time1: newtime1,
+                                    time2: m.time2,
+                                    state: newstate,
+                                }
                             };
                             if my_states.len() > 50 {
-                                max_dumped_into_glob += 1;
+                                #[cfg(feature = "log16_2")]
+                                {
+                                    logs.put_into_channel += 1;
+                                }
                                 let (lock, cv) = &*pair;
                                 let mut mutex = lock.lock().unwrap();
-                                mutex.1.append(&mut my_states.split_off(10));
+                                mutex.messages.append(&mut my_states.split_off(10));
                                 cv.notify_all();
                             } else {
                                 my_states.push(new_message);
@@ -269,6 +336,7 @@ fn main() {
             });
         }
     });
-    let l = glob_max.lock().unwrap();
-    println!("part 2: {}", l);
+    let (lock, _cv) = &*(glob_states);
+    let l = lock.lock().unwrap();
+    println!("part 2: {}", l.max);
 }
