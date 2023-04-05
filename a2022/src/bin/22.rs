@@ -1,3 +1,6 @@
+// This took me a lot of time.
+// I deleted the tests after it started getting the right answer
+
 use regex::Regex;
 
 #[derive(Debug)]
@@ -7,7 +10,7 @@ enum Instruction {
     Right,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Copy)]
 enum Point {
     Valid,
     Wall,
@@ -15,14 +18,46 @@ enum Point {
 }
 
 type Map = Vec<Vec<Point>>;
-type Dir = u8;
+
+#[derive(Debug, Clone, Copy)]
+pub enum Dir {
+    Right,
+    Down,
+    Left,
+    Up,
+}
+
+pub fn add(a: Dir, b: Dir) -> Dir {
+    from_int((to_int(a) + to_int(b)) % 4)
+}
+
+pub fn op(a: Dir) -> Dir {
+    from_int((4 - to_int(a)) % 4)
+}
+
+pub fn to_int(d: Dir) -> u8 {
+    match d {
+        Dir::Right => 0,
+        Dir::Down => 1,
+        Dir::Left => 2,
+        Dir::Up => 3,
+    }
+}
+
+fn from_int(i: u8) -> Dir {
+    match i {
+        0 => Dir::Right,
+        1 => Dir::Down,
+        2 => Dir::Left,
+        3 => Dir::Up,
+        _ => panic!("invalid direction"),
+    }
+}
 
 fn parse(f: &str) -> (Map, Vec<Instruction>) {
     let mut s: Vec<&str> = f.lines().collect();
 
     let final_line = s.pop().unwrap();
-
-    let instr_regex = Regex::new(r"(?P<num>\d+)|(?P<l>L)|(?P<r>R)").unwrap();
 
     s.pop();
 
@@ -36,10 +71,13 @@ fn parse(f: &str) -> (Map, Vec<Instruction>) {
                 '.' => grid[r][c] = Point::Valid,
                 '#' => grid[r][c] = Point::Wall,
                 ' ' => {}
-                _ => panic!(""),
+                _ => panic!("error parsing grid"),
             }
         }
     }
+
+    let instr_regex = Regex::new(r"(?P<num>\d+)|(?P<l>L)|(?P<r>R)").unwrap();
+
     (
         grid,
         instr_regex
@@ -50,65 +88,68 @@ fn parse(f: &str) -> (Map, Vec<Instruction>) {
                 }
                 () if cap.name("l").is_some() => Instruction::Left,
                 () if cap.name("r").is_some() => Instruction::Right,
-                _ => panic!("AAAA!!!AAA!!!AAAA!!!"),
+                _ => panic!("error parsing instructions"),
             })
             .collect(),
     )
 }
 
 trait CoordinateManager {
-    //not great that we need the Map for initialize then again for follow
-    //but initialize only looks at the general shape, follow uses the nodes
     fn initialize(v: &Map) -> Self;
 
-    fn step(&mut self, dir: Dir);
+    //notice that right is 0, so to turn 90*, we turn up or down. for 180*, left.
+    fn turn(&mut self, dir: Dir);
 
-    fn get_coordinates(&self) -> (usize, usize);
+    fn step(&mut self);
 
-    fn follow(&mut self, grid: &Map, instrs: &Vec<Instruction>) -> usize {
-        let mut dir = 0; // right to up, 0 to 3, clockwise
+    fn get_location(&self) -> (usize, usize, Dir);
+
+    fn follow(grid: &Map, instrs: &Vec<Instruction>) -> usize
+    where
+        Self: Sized,
+    {
+        let mut cm = Self::initialize(grid);
         for instr in instrs {
             match instr {
-                Instruction::Left => {
-                    dir = (dir + 3) % 4;
-                }
-                Instruction::Right => {
-                    dir = (dir + 1) % 4;
-                }
+                Instruction::Left => cm.turn(Dir::Up),
+                Instruction::Right => cm.turn(Dir::Down),
                 Instruction::Forward(n) => {
                     for _ in 0..*n {
-                        self.step(dir);
-                        let (nr, nc) = self.get_coordinates();
+                        cm.step();
+                        let (nr, nc, _) = cm.get_location();
                         if grid[nr][nc] == Point::Wall {
-                            self.step((dir + 2) % 4);
+                            cm.turn(Dir::Left);
+                            cm.step();
+                            cm.turn(Dir::Left);
                             break;
                         }
                     }
                 }
             }
         }
-        let (r, c) = self.get_coordinates();
-        1000 * (r + 1) + 4 * (c + 1) + dir as usize
+        let (r, c, d) = cm.get_location();
+        1000 * (r + 1) + 4 * (c + 1) + to_int(d) as usize
     }
 }
 
 mod ncm {
-    use crate::{CoordinateManager, Dir, Map, Point};
+    use crate::{add, CoordinateManager, Dir, Map, Point};
 
     pub struct NaiveCoordinateManager {
         r: usize,
         c: usize,
+        dir: Dir,
         h_bounds: Vec<(usize, usize)>,
         v_bounds: Vec<(usize, usize)>,
     }
 
     impl CoordinateManager for NaiveCoordinateManager {
         fn initialize(grid: &Map) -> Self {
-            let n = grid.len();
-            let m = grid.iter().map(|ss| ss.len()).max().unwrap();
+            let (n, m) = (grid.len(), grid[0].len());
             NaiveCoordinateManager {
                 r: 0,
                 c: grid[0].iter().position(|c| *c != Point::Empty).unwrap(),
+                dir: Dir::Right,
                 h_bounds: grid
                     .iter()
                     .map(|r| {
@@ -118,7 +159,6 @@ mod ncm {
                         )
                     })
                     .collect(),
-
                 v_bounds: (0..m)
                     .map(|j| {
                         (
@@ -129,365 +169,251 @@ mod ncm {
                     .collect(),
             }
         }
-        fn step(&mut self, dir: Dir) {
-            match dir {
-                0 => {
+
+        fn turn(&mut self, dir: Dir) {
+            self.dir = add(self.dir, dir);
+        }
+
+        fn step(&mut self) {
+            match self.dir {
+                Dir::Right => {
                     self.c = if self.c == self.h_bounds[self.r].1 {
                         self.h_bounds[self.r].0
                     } else {
                         self.c + 1
                     }
                 }
-                1 => {
+                Dir::Down => {
                     self.r = if self.r == self.v_bounds[self.c].1 {
                         self.v_bounds[self.c].0
                     } else {
                         self.r + 1
                     };
                 }
-                2 => {
+                Dir::Left => {
                     self.c = if self.c == self.h_bounds[self.r].0 {
                         self.h_bounds[self.r].1
                     } else {
                         self.c - 1
                     };
                 }
-                3 => {
+                Dir::Up => {
                     self.r = if self.r == self.v_bounds[self.c].0 {
                         self.v_bounds[self.c].1
                     } else {
                         self.r - 1
                     };
                 }
-                _ => panic!(""),
             };
         }
 
-        fn get_coordinates(&self) -> (usize, usize) {
-            (self.r, self.c)
+        fn get_location(&self) -> (usize, usize, Dir) {
+            (self.r, self.c, self.dir)
         }
     }
 }
 
 mod cube {
-    use crate::{CoordinateManager, Dir, Map, Point};
+    use crate::{add, op, to_int, CoordinateManager, Dir, Map, Point};
+    use std::collections::HashMap;
 
-    #[derive(Debug, PartialEq, Eq, Clone)]
-    struct Face {
+    #[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
+    enum Face {
+        Top,
+        Bottom,
+        Left,
+        Right,
+        Front,
+        Back,
+    }
+
+    const fn edge(f: Face, d: Dir) -> (Face, Dir) {
+        match (f, d) {
+            (Face::Front, Dir::Up) => (Face::Top, Dir::Up),
+            (Face::Front, Dir::Right) => (Face::Right, Dir::Right),
+            (Face::Front, Dir::Down) => (Face::Bottom, Dir::Down),
+            (Face::Front, Dir::Left) => (Face::Left, Dir::Left),
+            (Face::Top, Dir::Up) => (Face::Back, Dir::Up),
+            (Face::Top, Dir::Right) => (Face::Right, Dir::Down),
+            (Face::Top, Dir::Down) => (Face::Front, Dir::Down),
+            (Face::Top, Dir::Left) => (Face::Left, Dir::Down),
+            (Face::Right, Dir::Up) => (Face::Top, Dir::Left),
+            (Face::Right, Dir::Right) => (Face::Back, Dir::Left),
+            (Face::Right, Dir::Down) => (Face::Bottom, Dir::Left),
+            (Face::Right, Dir::Left) => (Face::Front, Dir::Left),
+            (Face::Left, Dir::Up) => (Face::Top, Dir::Right),
+            (Face::Left, Dir::Right) => (Face::Front, Dir::Right),
+            (Face::Left, Dir::Down) => (Face::Bottom, Dir::Right),
+            (Face::Left, Dir::Left) => (Face::Back, Dir::Right),
+            (Face::Bottom, Dir::Up) => (Face::Front, Dir::Up),
+            (Face::Bottom, Dir::Right) => (Face::Right, Dir::Up),
+            (Face::Bottom, Dir::Down) => (Face::Back, Dir::Down),
+            (Face::Bottom, Dir::Left) => (Face::Left, Dir::Up),
+            (Face::Back, Dir::Up) => (Face::Bottom, Dir::Up),
+            (Face::Back, Dir::Right) => (Face::Right, Dir::Left),
+            (Face::Back, Dir::Down) => (Face::Top, Dir::Down),
+            (Face::Back, Dir::Left) => (Face::Left, Dir::Right),
+        }
+    }
+
+    #[derive(Debug)]
+    struct FaceChart {
         topleft: (usize, usize),
         dir: Dir,
     }
 
-    impl Default for Face {
-        fn default() -> Self {
-            Face {
-                //didn't want to make these Option's but
-                //they do get set one by one during initialization.
-                topleft: (99999, 99999),
-                dir: 0,
-            }
-        }
-    }
-
-    #[derive(Default, Debug, PartialEq, Eq, Clone)]
-    pub struct Cube {
-        n: usize,
+    #[derive(Debug)]
+    pub struct CubeCoordinateManager {
+        fm: HashMap<Face, FaceChart>,
+        face: Face,
         row: usize,
-        column: usize,
-        front: Face,
-        back: Face,
-        up: Face,
-        right: Face,
-        down: Face,
-        left: Face,
+        col: usize,
+        dir: Dir,
+        n: usize,
     }
 
-    //there's no way to see future step:
-    //program will move, see if it's a wall and in that case, move in the opposite
-    //direction.
-    //
-    //cube always looks like
-    //  D
-    //E A F
-    //  B
-    //  C
-    //
-    //gets refolded
-
-    impl Cube {
-        fn clockwise(&mut self) {
-            std::mem::swap(&mut self.up, &mut self.right);
-            std::mem::swap(&mut self.left, &mut self.up);
-            std::mem::swap(&mut self.down, &mut self.left);
-
-            self.front.dir = (self.front.dir + 1) % 4;
-            self.up.dir = (self.up.dir + 1) % 4;
-            self.right.dir = (self.right.dir + 1) % 4;
-            self.down.dir = (self.down.dir + 1) % 4;
-            self.left.dir = (self.left.dir + 1) % 4;
-            self.back.dir = (self.back.dir + 3) % 4;
+    impl CoordinateManager for CubeCoordinateManager {
+        fn turn(&mut self, dir: Dir) {
+            self.dir = add(self.dir, dir);
         }
 
-        fn turn_to_up(&mut self) {
-            std::mem::swap(&mut self.up, &mut self.front);
-            std::mem::swap(&mut self.back, &mut self.up);
-            std::mem::swap(&mut self.down, &mut self.back);
-            self.left.dir = (self.left.dir + 1) % 4;
-            self.right.dir = (self.right.dir + 3) % 4;
-        }
+        fn initialize(map: &Map) -> Self {
+            let total: usize = map
+                .iter()
+                .map(|v| v.iter().filter(|x| **x != Point::Empty).count())
+                .sum();
 
-        // :(
-        fn turn_to(&mut self, dir: Dir) {
-            //a becomes b, b becomes c, c becomes d, d becomes a
-            fn swap4(a: &mut Face, b: &mut Face, c: &mut Face, d: &mut Face) {
-                std::mem::swap(a, b);
-                std::mem::swap(b, c);
-                std::mem::swap(c, d);
+            let n = ((total / 6) as f64).sqrt() as isize;
+            let mut fm: HashMap<Face, FaceChart> = HashMap::new();
+
+            struct VisitContext<'a> {
+                map: &'a Map,
+                n: isize,
+                fm: &'a mut HashMap<Face, FaceChart>,
             }
 
-            fn cw(a: &mut Face) {
-                a.dir = (a.dir + 3) % 4;
-            }
+            fn visit(vc: &mut VisitContext, r: isize, c: isize, turns: Dir, face: Face) {
+                vc.fm.insert(
+                    face,
+                    FaceChart {
+                        topleft: (r as usize, c as usize),
+                        dir: turns, // 4 - turns?
+                    },
+                );
+                let to_check = [
+                    (0, -vc.n, Dir::Left),
+                    (0, vc.n, Dir::Right),
+                    (-vc.n, 0, Dir::Up),
+                    (vc.n, 0, Dir::Down),
+                ];
 
-            fn ccw(a: &mut Face) {
-                a.dir = (a.dir + 1) % 4;
-            }
-
-            match dir {
-                1 => {
-                    swap4(
-                        &mut self.front,
-                        &mut self.down,
-                        &mut self.back,
-                        &mut self.up,
-                    );
-                    ccw(&mut self.left);
-                    cw(&mut self.right);
-                }
-                3 => {
-                    swap4(
-                        &mut self.front,
-                        &mut self.up,
-                        &mut self.back,
-                        &mut self.down,
-                    );
-                    cw(&mut self.left);
-                    ccw(&mut self.right);
-                }
-                2 => {
-                    swap4(
-                        &mut self.front,
-                        &mut self.left,
-                        &mut self.back,
-                        &mut self.right,
-                    );
-                    cw(&mut self.up);
-                    ccw(&mut self.down);
-                }
-                0 => {
-                    swap4(
-                        &mut self.front,
-                        &mut self.right,
-                        &mut self.back,
-                        &mut self.left,
-                    );
-                    ccw(&mut self.up);
-                    cw(&mut self.down);
-                }
-                _ => panic!(),
-            }
-        }
-    }
-    impl CoordinateManager for Cube {
-        fn step(&mut self, dir: Dir) {
-            match dir {
-                0 => {
-                    if self.column == self.n - 1 {
-                        self.turn_to(0);
-                        self.column = 0;
-                    } else {
-                        self.column += 1;
+                for (dr, dc, dd) in to_check.iter() {
+                    let (r_, c_) = (r + dr, c + dc);
+                    if r_ >= 0
+                        && c_ >= 0
+                        && (r_ as usize) < vc.map.len()
+                        && (c_ as usize) < vc.map[0].len()
+                        && vc.map[r_ as usize][c_ as usize] != Point::Empty
+                    {
+                        let (face_, turns_) = edge(face, add(*dd, turns));
+                        if vc.fm.get(&face_).is_none() {
+                            visit(vc, r + dr, c + dc, add(turns_, op(*dd)), face_);
+                        }
                     }
                 }
-                1 => {
-                    if self.row == self.n - 1 {
-                        self.turn_to(1);
-                        self.row = 0;
+            }
+            visit(
+                &mut VisitContext {
+                    map,
+                    n,
+                    fm: &mut fm,
+                },
+                0,
+                map[0].iter().position(|x| *x != Point::Empty).unwrap() as isize,
+                Dir::Right,
+                Face::Front,
+            );
+            CubeCoordinateManager {
+                fm,
+                face: Face::Front,
+                row: 0,
+                col: 0,
+                dir: Dir::Right,
+                n: n as usize - 1, //0..n inclusive are valid. so n-k is valid for valid k
+            }
+        }
+
+        fn get_location(&self) -> (usize, usize, Dir) {
+            let fc = self.fm.get(&self.face).unwrap();
+            let (mut r, mut c) = (self.row, self.col);
+
+            for _ in 0..to_int(op(fc.dir)) {
+                (r, c) = (c, self.n - r);
+            }
+
+            (
+                fc.topleft.0 + r,
+                fc.topleft.1 + c,
+                add(self.dir, op(fc.dir)),
+            )
+        }
+
+        fn step(&mut self) {
+            //offset is offset from you to the corner on *your* left (facing dir)
+            fn changedir(s: &mut CubeCoordinateManager, offset: usize) {
+                match s.dir {
+                    Dir::Right => {
+                        s.row = offset;
+                        s.col = 0;
+                    }
+                    Dir::Left => {
+                        s.row = s.n - offset;
+                        s.col = s.n;
+                    }
+                    Dir::Up => {
+                        s.row = s.n;
+                        s.col = offset;
+                    }
+                    Dir::Down => {
+                        s.row = 0;
+                        s.col = s.n - offset;
+                    }
+                }
+            }
+            match self.dir {
+                dd @ Dir::Right => {
+                    if self.col == self.n {
+                        (self.face, self.dir) = edge(self.face, dd);
+                        changedir(self, self.row);
+                    } else {
+                        self.col += 1;
+                    }
+                }
+                dd @ Dir::Left => {
+                    if self.col == 0 {
+                        (self.face, self.dir) = edge(self.face, dd);
+                        changedir(self, self.n - self.row);
+                    } else {
+                        self.col -= 1;
+                    }
+                }
+                dd @ Dir::Down => {
+                    if self.row == self.n {
+                        (self.face, self.dir) = edge(self.face, dd);
+                        changedir(self, self.n - self.col);
                     } else {
                         self.row += 1;
                     }
                 }
-                2 => {
-                    if self.column == 0 {
-                        self.turn_to(2);
-                        self.column = self.n - 1;
-                    } else {
-                        self.column -= 1;
-                    }
-                }
-                3 => {
+                dd @ Dir::Up => {
                     if self.row == 0 {
-                        self.turn_to(3);
-                        self.row = self.n - 1;
+                        (self.face, self.dir) = edge(self.face, dd);
+                        changedir(self, self.col);
                     } else {
                         self.row -= 1;
                     }
                 }
-                _ => panic!(""),
             }
-        }
-
-        fn get_coordinates(&self) -> (usize, usize) {
-            println!("local: {} {}", self.row, self.column);
-            println!("topleft: {:?}", self.front.topleft);
-            println!("topdir: {}", self.front.dir);
-            println!();
-            let mut r = self.row;
-            let mut c = self.column;
-            for _ in 0..self.front.dir {
-                let temp = r;
-                r = c;
-                c = self.n - 1 - temp;
-            }
-            /*
-            while self.front.dir != 0 {
-                self.clockwise();
-            }
-            */
-            let (row, column) = self.front.topleft;
-            (row + r, column + c)
-        }
-
-        fn initialize(grid: &Map) -> Self {
-            let total: usize = grid
-                .iter()
-                .map(|v| v.iter().filter(|c| **c != Point::Empty).count())
-                .sum();
-
-            let mut cube = Cube::default();
-            cube.n = ((total / 6) as f64).sqrt() as usize;
-
-            let start = grid[0].iter().position(|c| *c != Point::Empty).unwrap();
-
-            fn visit(grid: &Map, cube: &mut Cube, r: isize, c: isize, depth: usize) {
-                //println!("depth {} got: {:#?}", depth, cube);
-                cube.front.topleft = (r as usize, c as usize);
-                cube.front.dir = 0;
-                let n = cube.n as isize;
-                let check = |r: isize, c: isize| {
-                    r >= 0
-                        && c >= 0
-                        && r < grid.len() as isize
-                        && c < grid[0].len() as isize
-                        && grid[r as usize][c as usize] != Point::Empty
-                };
-
-                if check(r - n, c) {
-                    cube.turn_to(3);
-                    //println!("depth {} turning up", depth);
-                    if cube.front.topleft.0 == 99999 {
-                        //println!("   visiting");
-                        visit(grid, cube, r - n, c, depth + 1);
-                    }
-                    cube.turn_to(1);
-                }
-                if check(r + n, c) {
-                    cube.turn_to(1);
-                    //println!("depth {} turning down", depth);
-                    if cube.front.topleft.0 == 99999 {
-                        //println!("   visiting");
-                        visit(grid, cube, r + n, c, depth + 1);
-                    }
-                    cube.turn_to(3);
-                }
-                if check(r, c - n) {
-                    cube.turn_to(2);
-                    //println!("depth {} turning left", depth);
-                    if cube.front.topleft.0 == 99999 {
-                        //println!("   visiting");
-                        visit(grid, cube, r, c - n, depth + 1);
-                    }
-                    cube.turn_to(0);
-                }
-                if check(r, c + n) {
-                    cube.turn_to(0);
-                    //println!("depth {} turning right", depth);
-                    if cube.front.topleft.0 == 99999 {
-                        //println!("   visiting");
-                        visit(grid, cube, r, c + n, depth + 1);
-                    }
-                    cube.turn_to(2);
-                }
-            }
-
-            visit(grid, &mut cube, 0, start as isize, 0);
-
-            cube
-        }
-    }
-
-    #[test]
-    fn turnonce() {
-        const CUBE: &str = "  ....\n  ....\n  ..\n  ..\n....\n....\n..\n..\n\n5";
-
-        let (testgrid, _) = crate::parse(&CUBE);
-        let mut test = Cube::initialize(&testgrid);
-        println!("final cube: {:#?}", test);
-        //  println!("INITIAL: {:#?}", test);
-        //  test.turn_to(3);
-        //  println!("AFTER TURN UP: {:#?}", test);
-        panic!();
-    }
-}
-
-#[cfg(test)]
-mod cubetest {
-    use crate::*;
-
-    const CUBE: &str = "  ....\n  ....\n  ..\n  ..\n....\n....\n..\n..\n\n5";
-    const RIGHT: [(usize, usize); 8] = [
-        (0, 2),
-        (0, 3),
-        (0, 4),
-        (0, 5),
-        (5, 3),
-        (5, 2),
-        (5, 1),
-        (5, 0),
-    ];
-    const DOWN: [(usize, usize); 8] = [
-        (0, 2),
-        (1, 2),
-        (2, 2),
-        (3, 2),
-        (4, 2),
-        (5, 2),
-        (6, 1),
-        (6, 0),
-    ];
-
-    #[test]
-    fn walk() {
-        let (testgrid, _) = parse(&CUBE);
-        let mut test = cube::Cube::initialize(&testgrid);
-        println!("{:#?}", test);
-        for i in 1..=8 {
-            println!("{}", i);
-            test.step(0);
-            assert_eq!(test.get_coordinates(), RIGHT[i % 8]);
-        }
-        for i in 1..=8 {
-            test.step(1);
-            assert_eq!(test.get_coordinates(), DOWN[i % 8]);
-        }
-        for i in 1..=8 {
-            test.step(2);
-            assert_eq!(test.get_coordinates(), RIGHT[(8 - i) % 8]);
-        }
-        for i in 1..=8 {
-            test.step(3);
-            println!("{:#?}", test);
-            assert_eq!(test.get_coordinates(), DOWN[(8 - i) % 8]);
         }
     }
 }
@@ -496,34 +422,13 @@ fn main() {
     let f = std::fs::read_to_string("inputs/22.txt").unwrap();
     let (grid, instructions) = parse(&f);
 
-    let mut part1 = ncm::NaiveCoordinateManager::initialize(&grid);
+    println!(
+        "part1: {:#?}",
+        ncm::NaiveCoordinateManager::follow(&grid, &instructions)
+    );
 
-    println!("part1: {:#?}", part1.follow(&grid, &instructions));
-
-    /*let (testgrid, _) = parse(&test);
-        let mut test = cube::Cube::initialize(&testgrid);
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-        test.step(2);
-        println!("{:?}", test.get_coordinates());
-    */
-    //let mut part2 = cube::Cube::initialize(&grid);
-
-    //println!("part2: {:#?}", part2.follow(&grid, &instructions));
+    println!(
+        "part2: {:#?}",
+        cube::CubeCoordinateManager::follow(&grid, &instructions)
+    );
 }
