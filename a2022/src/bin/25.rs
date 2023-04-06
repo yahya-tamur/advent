@@ -41,18 +41,13 @@ fn to_int(v: &Snafu) -> i128 {
 fn to_snafu(mut n: i128) -> Snafu {
     let mut ans = vec![];
     while n != 0 {
-        match n.rem_euclid(5) {
-            a @ (0 | 1 | 2) => {
-                ans.push(a as i8);
-                n -= a;
-            }
-            a @ (3 | 4) => {
-                let a = a - 5;
-                ans.push(a as i8);
-                n -= a;
-            }
+        let a = match n.rem_euclid(5) {
+            a @ (0 | 1 | 2) => a,
+            a @ (3 | 4) => 5 - a,
             _ => panic!(),
-        }
+        };
+        ans.push(a as i8);
+        n -= a;
         assert!(n % 5 == 0);
         n /= 5;
     }
