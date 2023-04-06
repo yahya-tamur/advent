@@ -43,23 +43,26 @@ fn to_snafu(mut n: i128) -> Snafu {
     while n != 0 {
         let a = match n.rem_euclid(5) {
             a @ (0 | 1 | 2) => a,
-            a @ (3 | 4) => 5 - a,
-            _ => panic!(),
+            a @ (3 | 4) => a - 5,
+            _ => panic!("rem euclid returned something else???"),
         };
         ans.push(a as i8);
         n -= a;
         assert!(n % 5 == 0);
         n /= 5;
     }
-
     ans
 }
 
 fn main() {
-    let input = std::fs::read_to_string("inputs/25.txt").unwrap();
-    let mut ans = 0;
-    for line in input.lines() {
-        ans += to_int(&parse_snafu(line));
-    }
-    println!("{}", encode_snafu(&to_snafu(ans)));
+    println!(
+        "{}",
+        encode_snafu(&to_snafu(
+            std::fs::read_to_string("inputs/25.txt")
+                .unwrap()
+                .lines()
+                .map(|line| to_int(&parse_snafu(line)))
+                .sum()
+        ))
+    )
 }
