@@ -97,7 +97,7 @@ fn parse(f: &str) -> (Map, Vec<Instruction>) {
 trait CoordinateManager {
     fn initialize(v: &Map) -> Self;
 
-    //notice that right is 0, so to turn 90*, we turn up or down. for 180*, left.
+    //notice that right is 0, so to turn 90*, turn up or down. for 180*, left.
     fn turn(&mut self, dir: Dir);
 
     fn step(&mut self);
@@ -284,7 +284,6 @@ mod cube {
                 .sum();
 
             let n = ((total / 6) as f64).sqrt() as isize;
-            let mut fm: HashMap<Face, FaceChart> = HashMap::new();
 
             struct VisitContext<'a> {
                 map: &'a Map,
@@ -322,6 +321,7 @@ mod cube {
                     }
                 }
             }
+            let mut fm: HashMap<Face, FaceChart> = HashMap::new();
             visit(
                 &mut VisitContext {
                     map,
