@@ -51,19 +51,6 @@ struct State {
 }
 
 fn evaluate_blueprint(bp: &Blueprint, time_max: u32) -> u32 {
-    let mut states = vec![State {
-        ore: 0,
-        clay: 0,
-        obs: 0,
-        geo: 0,
-        ore_robots: 1,
-        clay_robots: 0,
-        obs_robots: 0,
-        geo_robots: 0,
-        time: 0,
-    }];
-    let mut max_geodes = 0;
-
     let ore_robots_necessary = *[bp.ore_ore, bp.geo_ore, bp.clay_ore, bp.geo_ore]
         .iter()
         .max()

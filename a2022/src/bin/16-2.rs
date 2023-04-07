@@ -30,18 +30,13 @@
 //The load seems to be well-balanced from the logs we see
 //though.
 //
+//Update: this was moved to lib::dfsrunner
 
 use regex::Regex;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 
 use lib::dfsrunner::{run, MessageSender, RunParameters};
-
-//I feel like having this higher than the number of physical
-//threads might be a good thing, since a lot of threads wait
-//anyway. I can't really check though -- it runs a bit too
-//fast like I mentioned.
-const NUM_THREADS: u8 = 20;
 
 #[derive(Debug)]
 struct Node {

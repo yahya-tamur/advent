@@ -10,7 +10,6 @@ rayon = "1.7.0"
 regex = "1.7.1"
 
 [features]
-log16_2 = [] # log in 16-2
 log = []
 
 [lib]
