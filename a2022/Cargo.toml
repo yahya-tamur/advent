@@ -11,3 +11,8 @@ regex = "1.7.1"
 
 [features]
 log16_2 = [] # log in 16-2
+log = []
+
+[lib]
+name = "lib"
+path = "src/lib.rs"

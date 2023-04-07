@@ -35,11 +35,7 @@ use regex::Regex;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 
-use std::sync::{Arc, Condvar, Mutex};
-use std::thread;
-
-#[cfg(feature = "log16_2")]
-use std::time::SystemTime;
+use lib::dfsrunner::{run, MessageSender, RunParameters};
 
 //I feel like having this higher than the number of physical
 //threads might be a good thing, since a lot of threads wait
@@ -84,47 +80,6 @@ fn parse(s: &str) -> Vec<Node> {
                 .collect(),
         })
         .collect()
-}
-
-struct Message {
-    score: usize,
-    node1: usize,
-    node2: usize,
-    time1: usize,
-    time2: usize,
-    state: u32,
-}
-
-struct MT {
-    waiting: u8,
-    max: usize,
-    messages: Vec<Message>,
-}
-
-#[cfg(feature = "log16_2")]
-#[derive(Default)]
-struct Logs {
-    states_processed: usize,
-    used_channel: usize,
-    put_into_channel: usize,
-    woke_up: usize,
-    waited: u128,
-}
-
-#[cfg(feature = "log16_2")]
-impl std::fmt::Display for Logs {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "I processed {} states. ", self.states_processed)?;
-        write!(f, "I used the channel {} times. ", self.used_channel)?;
-        write!(
-            f,
-            "I put into the channel {} times. ",
-            self.put_into_channel
-        )?;
-        write!(f, "I woke up {} times. ", self.woke_up)?;
-        write!(f, "I waited {} milliseconds.", self.waited / 1_000_000)?;
-        Ok(())
-    }
 }
 
 fn main() {
@@ -202,141 +157,86 @@ fn main() {
     }
     println!("part 1: {max_score}");
 
-    let glob_states: Arc<(Mutex<MT>, Condvar)> = Arc::new((
-        Mutex::new(MT {
-            waiting: 0,
-            max: 0,
-            messages: vec![Message {
+    struct Message {
+        score: usize,
+        node1: usize,
+        node2: usize,
+        time1: usize,
+        time2: usize,
+        state: u32,
+    }
+
+    struct MessageParameters {
+        npaths: Vec<Vec<usize>>,
+        nix: Vec<usize>,
+        graph: Vec<Node>,
+    }
+
+    fn process_message(
+        mp: &MessageParameters,
+        mut sender: MessageSender<'_, Message>,
+        m: Message,
+    ) -> usize {
+        let mut my_max = 0;
+        for newnode in 0..mp.nix.len() {
+            if m.state & (1 << newnode) == 0 {
+                continue;
+            }
+            let newtime1 = m.time1 + mp.npaths[m.node1][newnode] + 1;
+
+            if newtime1 > 26 {
+                continue;
+            }
+
+            let newscore = m.score + mp.graph[mp.nix[newnode]].flow * (26 - newtime1);
+            let newstate = m.state ^ (1 << newnode);
+            if newstate == 0 {
+                continue;
+            }
+            my_max = max(my_max, newscore);
+            sender.send(if newtime1 > m.time2 {
+                Message {
+                    score: newscore,
+                    node1: m.node2,
+                    node2: newnode,
+                    time1: m.time2,
+                    time2: newtime1,
+                    state: newstate,
+                }
+            } else {
+                Message {
+                    score: newscore,
+                    node1: newnode,
+                    node2: m.node2,
+                    time1: newtime1,
+                    time2: m.time2,
+                    state: newstate,
+                }
+            });
+        }
+        my_max
+    }
+
+    let initial_state = ((1 << nix.len()) - 1) ^ (1 << start);
+    println!(
+        "part 2: {}",
+        run(
+            RunParameters {
+                take: 3,
+                put_after: 50,
+                leave: 10,
+                num_threads: 30,
+            },
+            &MessageParameters { npaths, graph, nix },
+            Message {
                 score: 0,
                 node1: start,
                 node2: start,
                 time1: 0,
                 time2: 0,
-                state: ((1 << nix.len()) - 1) ^ (1 << start),
-            }],
-        }),
-        Condvar::new(),
-    ));
-
-    thread::scope(|s| {
-        for _ in 0..NUM_THREADS {
-            s.spawn(|| {
-                #[cfg(feature = "log16_2")]
-                let mut logs = Logs::default();
-
-                let mut my_states = Vec::<Message>::new();
-                let mut my_max = 0;
-                let pair = Arc::clone(&glob_states);
-                loop {
-                    #[cfg(feature = "log16_2")]
-                    {
-                        logs.used_channel += 1;
-                    }
-                    {
-                        let (lock, cv) = &*pair;
-                        let mut mutex = lock.lock().unwrap();
-                        mutex.waiting += 1;
-                        #[cfg(feature = "log16_2")]
-                        let started = SystemTime::now();
-                        while (*mutex.messages).is_empty() {
-                            if mutex.waiting == NUM_THREADS {
-                                #[cfg(feature = "log16_2")]
-                                {
-                                    logs.waited += SystemTime::now()
-                                        .duration_since(started)
-                                        .unwrap()
-                                        .as_nanos();
-                                    println!("{logs}");
-                                }
-                                {
-                                    mutex.max = max(my_max, mutex.max);
-                                }
-
-                                cv.notify_all();
-                                return;
-                            }
-                            mutex = cv.wait(mutex).unwrap();
-                            #[cfg(feature = "log16_2")]
-                            {
-                                logs.woke_up += 1;
-                            }
-                        }
-                        #[cfg(feature = "log16_2")]
-                        {
-                            logs.waited += SystemTime::now()
-                                .duration_since(started)
-                                .unwrap()
-                                .as_nanos();
-                        }
-                        mutex.waiting -= 1;
-                        for _ in 0..3 {
-                            if let Some(m) = mutex.messages.pop() {
-                                my_states.push(m);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-
-                    while let Some(m) = my_states.pop() {
-                        #[cfg(feature = "log16_2")]
-                        {
-                            logs.states_processed += 1;
-                        }
-                        for newnode in 0..nix.len() {
-                            if m.state & (1 << newnode) == 0 {
-                                continue;
-                            }
-                            let newtime1 = m.time1 + npaths[m.node1][newnode] + 1;
-
-                            if newtime1 > 26 {
-                                continue;
-                            }
-
-                            let newscore = m.score + graph[nix[newnode]].flow * (26 - newtime1);
-                            let newstate = m.state ^ (1 << newnode);
-                            if newstate == 0 {
-                                continue;
-                            }
-                            my_max = max(my_max, newscore);
-                            let new_message = if newtime1 > m.time2 {
-                                Message {
-                                    score: newscore,
-                                    node1: m.node2,
-                                    node2: newnode,
-                                    time1: m.time2,
-                                    time2: newtime1,
-                                    state: newstate,
-                                }
-                            } else {
-                                Message {
-                                    score: newscore,
-                                    node1: newnode,
-                                    node2: m.node2,
-                                    time1: newtime1,
-                                    time2: m.time2,
-                                    state: newstate,
-                                }
-                            };
-                            if my_states.len() > 50 {
-                                #[cfg(feature = "log16_2")]
-                                {
-                                    logs.put_into_channel += 1;
-                                }
-                                let (lock, cv) = &*pair;
-                                let mut mutex = lock.lock().unwrap();
-                                mutex.messages.append(&mut my_states.split_off(10));
-                                cv.notify_all();
-                            } else {
-                                my_states.push(new_message);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    });
-    let (lock, _cv) = &*(glob_states);
-    let l = lock.lock().unwrap();
-    println!("part 2: {}", l.max);
+                state: initial_state,
+            },
+            process_message,
+        )
+    );
 }
