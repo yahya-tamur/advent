@@ -36,7 +36,7 @@ use regex::Regex;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 
-use lib::dfsrunner::{run, MessageSender, RunParameters};
+use common::dfsrunner::{run, MessageSender, RunParameters};
 
 #[derive(Debug)]
 struct Node {

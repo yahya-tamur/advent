@@ -2,7 +2,7 @@
 //I might factor out the common parts and use that for both of these
 use regex::{Match, Regex};
 
-use lib::dfsrunner::{run, MessageSender, RunParameters};
+use common::dfsrunner::{run, MessageSender, RunParameters};
 
 #[derive(Debug)]
 struct Blueprint {
