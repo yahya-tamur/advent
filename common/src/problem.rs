@@ -6,7 +6,7 @@ use std::path;
 //add automatic submitting?
 
 fn problem_dir(year: i32) -> String {
-    format!("../inputs/a{}", year)
+    format!("./inputs/a{}", year)
 }
 
 fn problem_file(year: i32, day: i32) -> String {
@@ -14,10 +14,10 @@ fn problem_file(year: i32, day: i32) -> String {
 }
 
 fn download_problem(year: i32, day: i32) {
-    let session = fs::read_to_string("../session.txt")
+    let session = fs::read_to_string("./session.txt")
         .expect("Couldn't find session.txt in the parent directory");
     let session = format!("session={}", &session[0..session.len() - 1]);
-    if !path::Path::new("../inputs").exists() {
+    if !path::Path::new("./inputs").exists() {
         panic!("Couldn't find an inputs directory in your parent directory");
     }
 
