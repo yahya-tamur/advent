@@ -1,7 +1,5 @@
 use regex::Regex;
 use std::cmp::max;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 fn parse_line(s: &str) -> Vec<(usize, usize)> {
     let r = Regex::new(r"(?P<first>\d+),(?P<second>\d+)").unwrap();
@@ -20,11 +18,9 @@ const ROWS: usize = 1000;
 const COLS: usize = 200;
 
 fn main() {
-    let file = File::open("inputs/14.txt").unwrap();
-
     let mut spots = vec![vec![false; COLS]; ROWS];
     let mut maxy = 0;
-    for line in BufReader::new(file).lines().map(|x| x.unwrap()) {
+    for line in common::get_problem_lines(2022, 14) {
         let v = parse_line(&line);
         maxy = max(maxy, v.iter().map(|(_, y)| *y).max().unwrap_or(0));
         for i in 1..v.len() {

@@ -43,7 +43,7 @@ fn parse(s: &str) -> Vec<Node> {
 }
 
 fn main() {
-    let s = std::fs::read_to_string("inputs/16.txt").unwrap();
+    let s = common::get_problem(2022, 16);
     let graph: Vec<Node> = parse(&s);
     let state_nodes: HashMap<usize, usize> = HashMap::from_iter(
         graph

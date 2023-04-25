@@ -1,5 +1,6 @@
 //let's say left to right is actually least to most significant bit
 type Snafu = Vec<i8>;
+use common::get_problem_lines;
 
 fn parse_snafu(v: &str) -> Snafu {
     v.chars()
@@ -58,10 +59,8 @@ fn main() {
     println!(
         "{}",
         encode_snafu(&to_snafu(
-            std::fs::read_to_string("inputs/25.txt")
-                .unwrap()
-                .lines()
-                .map(|line| to_int(&parse_snafu(line)))
+            get_problem_lines(2022, 25)
+                .map(|line| to_int(&parse_snafu(&line)))
                 .sum()
         ))
     )

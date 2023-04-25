@@ -1,5 +1,3 @@
-use std::io::{prelude::*, BufReader};
-
 fn parse(line: &str) -> (usize, usize, usize) {
     let mut it = line.split(',').map(|x| x.parse().unwrap());
     let a: usize = it.next().unwrap();
@@ -9,10 +7,8 @@ fn parse(line: &str) -> (usize, usize, usize) {
 }
 
 fn main() {
-    let file = std::fs::File::open("inputs/18.txt").unwrap();
-    let cubes: Vec<(usize, usize, usize)> = BufReader::new(file)
-        .lines()
-        .map(|line| parse(&line.unwrap()))
+    let cubes: Vec<(usize, usize, usize)> = common::get_problem_lines(2022, 18)
+        .map(|line| parse(&line))
         .collect();
     //cube indices range from 1 to 21 (after shifting in parse)
     let mut cubemap: Vec<i8> = vec![0; 22 * 22 * 22];

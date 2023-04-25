@@ -1,15 +1,11 @@
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::open("inputs/01.txt")?;
-    let reader = BufReader::new(file);
     let mut heap = BinaryHeap::from([Reverse(0); 3]);
     let mut acc: i32 = 0;
 
-    for line in reader.lines().map(|a| a.unwrap()) {
+    for line in common::get_problem_lines(2022, 1) {
         if line.is_empty() {
             heap.push(Reverse(acc));
             heap.pop();

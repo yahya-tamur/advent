@@ -419,7 +419,7 @@ mod cube {
 }
 
 fn main() {
-    let f = std::fs::read_to_string("inputs/22.txt").unwrap();
+    let f = common::get_problem(2022, 22);
     let (grid, instructions) = parse(&f);
 
     println!(

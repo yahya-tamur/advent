@@ -4,8 +4,6 @@
 //t-visited: bool array
 
 use regex::Regex;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 //up: (0,1), right: (0,1)
 fn parse_line(s: &str) -> Vec<(i32, i32)> {
@@ -34,8 +32,7 @@ fn main() {
     let (hx, hy) = rope[0];
     spots[hx as usize][hy as usize] = true;
 
-    let file = File::open("inputs/09.txt").unwrap();
-    for line in BufReader::new(file).lines().map(|x| x.unwrap()) {
+    for line in common::get_problem_lines(2022, 9) {
         for (dx, dy) in parse_line(&line) {
             let (hx, hy) = rope[0];
             rope[0] = (hx + dx, hy + dy);

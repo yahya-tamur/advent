@@ -184,7 +184,7 @@ fn big_event_loop(input: &str, bignum: usize) -> usize {
 }
 
 fn main() {
-    let s: String = std::fs::read_to_string("inputs/17.txt").unwrap();
+    let s: String = common::get_problem(2022, 17);
     let s = &s[0..s.len() - 1];
 
     let mut part1state = State::init(s);

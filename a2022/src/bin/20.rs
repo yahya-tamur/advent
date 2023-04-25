@@ -13,9 +13,6 @@
 //essentially what 'lambdas' is or the linked
 //list would be.
 
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
-
 struct State {
     lambdas: Vec<(i64, i64)>,
     length: i64,
@@ -78,10 +75,8 @@ fn get_ans(v: &Vec<i64>, n: usize) -> i64 {
 }
 
 fn main() {
-    let file = File::open("inputs/20.txt").unwrap();
-    let mut v: Vec<i64> = BufReader::new(file)
-        .lines()
-        .map(|x| x.unwrap().parse::<i64>().unwrap())
+    let mut v: Vec<i64> = common::get_problem_lines(2022, 20)
+        .map(|x| x.parse::<i64>().unwrap())
         .collect();
 
     println!("part 1: {}", get_ans(&v, 1));

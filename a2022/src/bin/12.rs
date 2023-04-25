@@ -1,13 +1,8 @@
 use std::collections::VecDeque;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 fn main() {
-    let file = File::open("inputs/12.txt").unwrap();
-    let mut heights: Vec<Vec<u8>> = BufReader::new(file)
-        .lines()
-        .map(|x| x.unwrap().into_bytes())
-        .collect();
+    let it = common::get_problem_lines(2022, 12);
+    let mut heights: Vec<Vec<u8>> = it.map(|x| x.into_bytes()).collect();
     let (n, m) = (heights.len(), heights[0].len());
     let (mut start, mut end) = ((0, 0), (0, 0));
     let mut in_progress = VecDeque::new();

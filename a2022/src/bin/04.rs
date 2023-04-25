@@ -1,6 +1,4 @@
 use regex::Regex;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 fn parse_line(s: &str) -> Option<(i32, i32, i32, i32)> {
     let r = Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
@@ -14,12 +12,9 @@ fn parse_line(s: &str) -> Option<(i32, i32, i32, i32)> {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::open("inputs/04.txt")?;
-    let reader = BufReader::new(file);
-
     let mut sum = 0;
     let mut sum2 = 0;
-    for line in reader.lines().map(|a| a.unwrap()) {
+    for line in common::get_problem_lines(2022, 4) {
         let (a, b, c, d) = parse_line(&line).unwrap();
         if (c <= a && b <= d) || (a <= c && d <= b) {
             sum += 1;

@@ -1,7 +1,5 @@
 use regex::Regex;
 use std::collections::VecDeque;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 fn parse_move(s: &str) -> Option<(usize, usize, usize)> {
     let r = Regex::new(r"move (\d+) from (\d+) to (\d+)").unwrap();
@@ -16,12 +14,11 @@ const MAX_HEIGHT: usize = 8;
 const NUM_BOXES: usize = 9;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = File::open("inputs/05.txt")?;
-    let mut it = BufReader::new(file).lines();
+    let mut it = common::get_problem_lines(2022, 5);
     let mut boxes: Vec<VecDeque<u8>> = vec![VecDeque::new(); NUM_BOXES];
 
     for _ in 0..MAX_HEIGHT {
-        let line = it.next().unwrap()?;
+        let line = it.next().unwrap();
         let line = line.as_bytes();
         for i in 0..NUM_BOXES {
             let b = line[4 * i + 1];
@@ -32,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     it.next();
     it.next();
-    for line in it.map(|x| x.unwrap()) {
+    for line in it {
         let (n, src, dest) = parse_move(&line).unwrap();
         //swap between these sections for parts 1 and 2
         /*

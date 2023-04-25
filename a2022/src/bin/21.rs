@@ -130,7 +130,7 @@ fn getx<'a>(hm: &HashMap<&'a str, Node<'a>>, node: &'a str, eq: i64) -> i64 {
 }
 
 fn main() {
-    let file = std::fs::read_to_string("inputs/21.txt").unwrap();
+    let file = common::get_problem(2022, 21);
     let mut hm = parse(&file);
 
     const_prop(&mut hm, "root", false);

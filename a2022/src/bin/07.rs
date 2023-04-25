@@ -1,6 +1,4 @@
 use regex::Regex;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 #[derive(Debug)]
 enum Com<'a> {
@@ -40,8 +38,7 @@ fn parse_line(s: &str) -> Option<Com> {
 const ALL_SIZE: i32 = 41072511;
 
 fn main() {
-    let file = File::open("inputs/07.txt").unwrap();
-    let it = BufReader::new(file).lines();
+    let it = common::get_problem_lines(2022, 7);
     let mut sum = 0;
     let mut bestdir: (String, i32) = ("none yet!".to_string(), i32::MAX);
 
@@ -66,7 +63,7 @@ fn main() {
             add(stack, d_size);
         }
     };
-    for line in it.map(|x| x.unwrap()) {
+    for line in it {
         match parse_line(&line).unwrap() {
             Com::MoveOut => {
                 moveout(&mut stack);

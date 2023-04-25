@@ -1,5 +1,4 @@
 use regex::Regex;
-use std::fs;
 
 struct Monkey {
     items: Vec<u64>,
@@ -58,7 +57,7 @@ fn parse_monkey(s: &str) -> Monkey {
 const ROUNDS: usize = 10000;
 
 fn main() {
-    let s: String = fs::read_to_string("inputs/11.txt").unwrap();
+    let s: String = common::get_problem(2022, 11);
     let mut it = s.split("Monkey");
     it.next();
     let monkeys: Vec<Monkey> = it.map(parse_monkey).collect();

@@ -1,6 +1,5 @@
 use regex::Regex;
 use std::cmp::{max, min};
-use std::fs;
 
 fn parse_lines(s: &str) -> Vec<(i64, i64, i64, i64)> {
     let r = Regex::new(
@@ -31,7 +30,7 @@ fn beacon_to_interval(x1: i64, y1: i64, x2: i64, y2: i64, scan: i64) -> (i64, i6
 }
 
 fn main() {
-    let input = fs::read_to_string("inputs/15.txt").unwrap();
+    let input = common::get_problem(2022, 15);
     let beacons = parse_lines(&input);
 
     let mut line = 0;

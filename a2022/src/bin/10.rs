@@ -1,6 +1,4 @@
 use regex::Regex;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 
 //returns (cycles to wait, value to add after)
 fn parse_line(s: &str) -> (i32, i32) {
@@ -22,8 +20,7 @@ fn parse_line(s: &str) -> (i32, i32) {
 }
 
 fn main() {
-    let file = File::open("inputs/10.txt").unwrap();
-    let mut it = BufReader::new(file).lines().map(|x| x.unwrap());
+    let mut it = common::get_problem_lines(2022, 10);
     let mut x = 1;
     let (mut wait, mut newval) = parse_line(&it.next().unwrap());
     let mut sum = 0;

@@ -30,7 +30,7 @@
 //The load seems to be well-balanced from the logs we see
 //though.
 //
-//Update: this was moved to lib::dfsrunner
+//Update: this was moved to common::dfsrunner
 
 use regex::Regex;
 use std::cmp::{max, min};
@@ -78,7 +78,7 @@ fn parse(s: &str) -> Vec<Node> {
 }
 
 fn main() {
-    let s = std::fs::read_to_string("inputs/16.txt").unwrap();
+    let s = common::get_problem(2022, 16);
     let graph: Vec<Node> = parse(&s);
 
     let mut paths: Vec<Vec<usize>> = Vec::with_capacity(graph.len() - 1);

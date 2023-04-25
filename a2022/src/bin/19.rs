@@ -145,54 +145,10 @@ fn evaluate_blueprint(bp: &Blueprint, time_max: u32) -> u32 {
         },
         process_message,
     ) as u32
-    /*
-    while let Some(state) = states.pop() {
-        if state.time == time_max
-            || state.geo
-                + ((time_max - 1 - state.time) * (time_max - state.time) / 2)
-                + (time_max - state.time) * state.geo_robots
-                < max_geodes
-        {
-            if state.geo > max_geodes {
-                max_geodes = state.geo;
-            }
-            continue;
-        }
-
-            states.push(advance(&state));
-            if (state.ore >= bp.ore_ore) && state.ore_robots < ore_robots_necessary {
-                let mut newstate = advance(&state);
-                newstate.ore -= bp.ore_ore;
-                newstate.ore_robots += 1;
-                states.push(newstate);
-            }
-            if (state.ore >= bp.clay_ore) && state.clay_robots < bp.obs_clay {
-                let mut newstate = advance(&state);
-                newstate.ore -= bp.clay_ore;
-                newstate.clay_robots += 1;
-                states.push(newstate);
-            }
-            if (state.ore >= bp.obs_ore) && (state.clay >= bp.obs_clay) && state.obs_robots < bp.geo_obs
-            {
-                let mut newstate = advance(&state);
-                newstate.ore -= bp.obs_ore;
-                newstate.clay -= bp.obs_clay;
-                newstate.obs_robots += 1;
-                states.push(newstate);
-            }
-            if (state.ore >= bp.geo_ore) && (state.obs >= bp.geo_obs) {
-                let mut newstate = advance(&state);
-                newstate.ore -= bp.geo_ore;
-                newstate.obs -= bp.geo_obs;
-                newstate.geo_robots += 1;
-                states.push(newstate);
-            }
-        }
-        max_geodes*/
 }
 
 fn main() {
-    let blueprints = parse(&std::fs::read_to_string("inputs/19.txt").unwrap());
+    let blueprints = parse(&common::get_problem(2022, 19));
     let mut ans = 0;
     for (i, bp) in blueprints.iter().enumerate() {
         println!("{}", i + 1);

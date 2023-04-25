@@ -1,6 +1,3 @@
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
-
 //v, n -> returns i so that v[i..] < n
 fn binary_search(ix: &Vec<usize>, src: impl Fn(usize) -> u8, n: u8) -> usize {
     // [ , )
@@ -20,10 +17,8 @@ fn binary_search(ix: &Vec<usize>, src: impl Fn(usize) -> u8, n: u8) -> usize {
 type Transform = fn(usize, usize, usize) -> (usize, usize);
 
 fn main() {
-    let file = File::open("inputs/08.txt").unwrap();
-    let input: Vec<Vec<u8>> = BufReader::new(file)
-        .lines()
-        .map(|x| x.unwrap().into_bytes())
+    let input: Vec<Vec<u8>> = common::get_problem_lines(2022, 8)
+        .map(|x| x.into_bytes())
         .collect();
     let n = input.len();
 

@@ -119,7 +119,7 @@ fn iterate(grid: &mut Vec<Vec<u8>>, goals: Vec<(usize, usize)>) {
 }
 
 fn main() {
-    let file = std::fs::read_to_string("inputs/24.txt").unwrap();
+    let file = common::get_problem(2022, 24);
     let mut v = parse(&file);
     let (n, m) = (v.len(), v[0].len());
     //iterate is what prints out the answer for efficiency reasons --

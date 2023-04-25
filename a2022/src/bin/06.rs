@@ -1,5 +1,4 @@
 use std::collections::VecDeque;
-use std::fs;
 
 //set to 4 for part 1
 const DIST: u8 = 14;
@@ -14,7 +13,7 @@ fn bitcount(mut u: u32) -> u32 {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let input = fs::read_to_string("inputs/06.txt").unwrap();
+    let input = common::get_problem(2022, 6);
     let bytes = input.as_bytes();
     let mut mask = 0u32;
     let mut queue: VecDeque<u8> = VecDeque::new();

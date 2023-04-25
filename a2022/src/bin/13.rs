@@ -1,7 +1,5 @@
 use regex::Regex;
 use std::cmp::Ordering;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
 use std::iter::zip;
 
 #[derive(Debug)]
@@ -93,13 +91,11 @@ fn mtpl(s: &str) -> Tree {
 }
 
 fn main() {
-    let file = File::open("inputs/13.txt").unwrap();
-
     /**/
-    let it = BufReader::new(file).lines();
+    let it = common::get_problem_lines(2022, 13);
 
     let mut trees = vec![mtpl("[[2]]"), mtpl("[[6]]")];
-    for line in it.map(|x| x.unwrap()) {
+    for line in it {
         if !line.is_empty() {
             trees.push(mtpl(&line));
         }
@@ -109,14 +105,12 @@ fn main() {
     let r = trees.binary_search(&mtpl("[[6]]")).unwrap();
     println!("decoder key: {:?}", (l + 1) * (r + 1));
     // */
-
-    /*
-    let mut it = BufReader::new(file).lines();
+    let mut it = common::get_problem_lines(2022, 13);
     let mut sum = 0;
     let mut pairs = 1;
     loop {
-        let left = mtpl(&it.next().unwrap().unwrap());
-        let right = mtpl(&it.next().unwrap().unwrap());
+        let left = mtpl(&it.next().unwrap());
+        let right = mtpl(&it.next().unwrap());
         if left < right {
             sum += pairs;
         }
@@ -126,5 +120,4 @@ fn main() {
         }
     }
     println!("{sum}");
-    // */
 }

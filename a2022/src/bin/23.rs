@@ -225,7 +225,7 @@ fn part2(mut grid: Vec<Vec<Point>>) -> usize {
 }
 
 fn main() {
-    let input = std::fs::read_to_string("inputs/23.txt").unwrap();
+    let input = common::get_problem(2022, 23);
     println!("part 1: {}", part1(parse(&input)));
     println!("part 2: {}", part2(parse(&input)));
 }
