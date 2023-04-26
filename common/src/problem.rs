@@ -13,11 +13,11 @@ fn session_file() -> PathBuf {
     PathBuf::from(dotenv!("SESSION_FILE"))
 }
 
-fn problem_dir<'a>(year: i32) -> PathBuf {
+fn problem_dir(year: i32) -> PathBuf {
     input_dir().join(format!("a{}", year))
 }
 
-fn problem_file<'a>(year: i32, day: i32) -> PathBuf {
+fn problem_file(year: i32, day: i32) -> PathBuf {
     problem_dir(year).join(format!("{}.txt", day))
 }
 

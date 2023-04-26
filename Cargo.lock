@@ -14,7 +14,6 @@ name = "a2022"
 version = "0.1.0"
 dependencies = [
  "common",
- "dotenv_codegen",
  "rayon",
  "regex",
 ]
