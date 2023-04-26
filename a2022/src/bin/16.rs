@@ -161,58 +161,13 @@ fn main() {
         state: u32,
     }
 
-    struct MessageParameters {
-        npaths: Vec<Vec<usize>>,
-        nix: Vec<usize>,
-        graph: Vec<Node>,
+    #[derive(Copy, Clone)]
+    struct MessageParameters<'a> {
+        npaths: &'a Vec<Vec<usize>>,
+        nix: &'a Vec<usize>,
+        graph: &'a Vec<Node>,
     }
 
-    fn process_message(
-        mp: &MessageParameters,
-        mut sender: MessageSender<'_, Message>,
-        m: Message,
-    ) -> usize {
-        let mut my_max = 0;
-        for newnode in 0..mp.nix.len() {
-            if m.state & (1 << newnode) == 0 {
-                continue;
-            }
-            let newtime1 = m.time1 + mp.npaths[m.node1][newnode] + 1;
-
-            if newtime1 > 26 {
-                continue;
-            }
-
-            let newscore = m.score + mp.graph[mp.nix[newnode]].flow * (26 - newtime1);
-            let newstate = m.state ^ (1 << newnode);
-            if newstate == 0 {
-                continue;
-            }
-            my_max = max(my_max, newscore);
-            sender.send(if newtime1 > m.time2 {
-                Message {
-                    score: newscore,
-                    node1: m.node2,
-                    node2: newnode,
-                    time1: m.time2,
-                    time2: newtime1,
-                    state: newstate,
-                }
-            } else {
-                Message {
-                    score: newscore,
-                    node1: newnode,
-                    node2: m.node2,
-                    time1: newtime1,
-                    time2: m.time2,
-                    state: newstate,
-                }
-            });
-        }
-        my_max
-    }
-
-    let initial_state = ((1 << nix.len()) - 1) ^ (1 << start);
     println!(
         "part 2: {}",
         run(
@@ -222,16 +177,59 @@ fn main() {
                 leave: 10,
                 num_threads: 30,
             },
-            &MessageParameters { npaths, graph, nix },
+            MessageParameters {
+                npaths: &npaths,
+                graph: &graph,
+                nix: &nix
+            },
             Message {
                 score: 0,
                 node1: start,
                 node2: start,
                 time1: 0,
                 time2: 0,
-                state: initial_state,
+                state: ((1 << nix.len()) - 1) ^ (1 << start),
             },
-            process_message,
+            |mp: MessageParameters, mut sender: MessageSender<'_, Message>, m: Message| {
+                let mut my_max = 0;
+                for newnode in 0..mp.nix.len() {
+                    if m.state & (1 << newnode) == 0 {
+                        continue;
+                    }
+                    let newtime1 = m.time1 + mp.npaths[m.node1][newnode] + 1;
+
+                    if newtime1 > 26 {
+                        continue;
+                    }
+
+                    let newscore = m.score + mp.graph[mp.nix[newnode]].flow * (26 - newtime1);
+                    let newstate = m.state ^ (1 << newnode);
+                    if newstate == 0 {
+                        continue;
+                    }
+                    my_max = max(my_max, newscore);
+                    sender.send(if newtime1 > m.time2 {
+                        Message {
+                            score: newscore,
+                            node1: m.node2,
+                            node2: newnode,
+                            time1: m.time2,
+                            time2: newtime1,
+                            state: newstate,
+                        }
+                    } else {
+                        Message {
+                            score: newscore,
+                            node1: newnode,
+                            node2: m.node2,
+                            time1: newtime1,
+                            time2: m.time2,
+                            state: newstate,
+                        }
+                    });
+                }
+                my_max
+            }
         )
     );
 }

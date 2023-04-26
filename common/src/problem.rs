@@ -1,27 +1,37 @@
+use dotenv::dotenv;
+use dotenv_codegen::dotenv;
 use reqwest::blocking::Client;
 use std::fs;
 use std::io::{prelude::*, BufReader};
-use std::path;
+use std::path::*;
 
-//add automatic submitting?
-
-fn problem_dir(year: i32) -> String {
-    format!("./inputs/a{}", year)
+fn input_dir() -> PathBuf {
+    PathBuf::from(dotenv!("INPUT_DIR"))
 }
 
-fn problem_file(year: i32, day: i32) -> String {
-    format!("{}/{}.txt", problem_dir(year), day)
+fn session_file() -> PathBuf {
+    PathBuf::from(dotenv!("SESSION_FILE"))
+}
+
+fn problem_dir<'a>(year: i32) -> PathBuf {
+    input_dir().join(format!("a{}", year))
+}
+
+fn problem_file<'a>(year: i32, day: i32) -> PathBuf {
+    problem_dir(year).join(format!("{}.txt", day))
 }
 
 fn download_problem(year: i32, day: i32) {
-    let session = fs::read_to_string("./session.txt")
-        .expect("Couldn't find session.txt in the parent directory");
-    let session = format!("session={}", &session[0..session.len() - 1]);
-    if !path::Path::new("./inputs").exists() {
-        panic!("Couldn't find an inputs directory in your parent directory");
+    if !session_file().exists() {
+        panic!("Couldn't find the session file");
     }
+    if !input_dir().exists() {
+        panic!("Couldn't find the inputs folder");
+    }
+    let session = fs::read_to_string(session_file()).unwrap();
+    //deletes new line at the end
+    let session = format!("session={}", &session[0..session.len() - 1]);
 
-    fs::create_dir_all(problem_dir(year)).unwrap();
     let resp = Client::new()
         .get(format!(
             "https://adventofcode.com/{}/day/{}/input",
@@ -30,25 +40,26 @@ fn download_problem(year: i32, day: i32) {
         .header("Cookie", session)
         .send()
         .unwrap();
-    //.text()
-    //.unwrap();
 
     if resp.status() != reqwest::StatusCode::OK {
         panic!("request failed... maybe session is expired?");
     }
 
+    fs::create_dir_all(problem_dir(year)).unwrap();
     fs::write(problem_file(year, day), resp.text().unwrap()).unwrap();
 }
 
 pub fn get_problem(year: i32, day: i32) -> String {
-    if !path::Path::new(&problem_file(year, day)).exists() {
+    dotenv().ok();
+    if !problem_file(year, day).exists() {
         download_problem(year, day);
     }
-    std::fs::read_to_string(&problem_file(year, day)).unwrap()
+    std::fs::read_to_string(problem_file(year, day)).unwrap()
 }
 
 pub fn get_problem_lines(year: i32, day: i32) -> impl Iterator<Item = String> {
-    if !path::Path::new(&problem_file(year, day)).exists() {
+    dotenv().ok();
+    if !problem_file(year, day).exists() {
         download_problem(year, day);
     }
     let file = fs::File::open(problem_file(year, day)).unwrap();

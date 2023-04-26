@@ -53,13 +53,13 @@ pub struct RunParameters {
 //add more parameters?
 pub fn run<Message, Parameters>(
     rp: RunParameters,
-    p: &Parameters,
+    p: Parameters,
     initial: Message,
-    process: fn(&Parameters, MessageSender<'_, Message>, Message) -> usize,
+    process: fn(Parameters, MessageSender<'_, Message>, Message) -> usize,
 ) -> usize
 where
     Message: Sync + Send,
-    Parameters: Sync + Send,
+    Parameters: Sync + Send + Copy,
 {
     let arc = Arc::new((
         Mutex::new(MT {
