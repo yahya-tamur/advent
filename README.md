@@ -1,4 +1,4 @@
-Has all the solutions for 2022.
+Has all the solutions for 2022, some for 2021.
 
 Some earlier days don't have a clear answer
 for part 1 as well as part 2 -- I might refactor
@@ -39,6 +39,7 @@ being able to share some code if I need to. I'm really happy with how all the
 inputs from all the years are in a single folder that's automatically
 managed.
 
-*Opening the website in Firefox, go to the storage tab in the
-f12 menu. If you're logged in, there should be a cookie vith the
-name 'session'. Copy its value into a file.
+* I also made a chrome extension for getting this. Add the extension in the
+'extension' folder, click the icon on the chrome top bar, and click 'copy
+command'. Paste the command to replace the closest file named 'session.txt' in
+the ancestors of the current directory.

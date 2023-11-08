@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "advent-of-code",
+  "description": "Gets current session and copies command to write that in the nearest session.txt file.",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["clipboardWrite", "cookies"],
+  "host_permissions": ["https://adventofcode.com/*"]
+}

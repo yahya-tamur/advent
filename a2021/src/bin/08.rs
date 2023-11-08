@@ -35,10 +35,7 @@ fn decode(line: &str) -> i32 {
 
     let mut ans = 0;
     for code in line[i + 2..].split(' ') {
-        let mut decoded: Vec<char> = code
-            .bytes()
-            .map(|c| decoded[(c - b'a') as usize])
-            .collect();
+        let mut decoded: Vec<char> = code.bytes().map(|c| decoded[(c - b'a') as usize]).collect();
         decoded.sort();
         let digit = match decoded.into_iter().collect::<String>().as_str() {
             "abcefg" => 0,
