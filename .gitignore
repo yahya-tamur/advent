@@ -2,3 +2,4 @@ target
 inputs
 session.txt
 .env
+**/__pycache__/*
