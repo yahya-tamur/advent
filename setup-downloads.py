@@ -1,18 +1,38 @@
 import os
 
+print()
+print("Both python and rust projects have modules called 'common'")
+print('that get the problem inputs.')
+print()
+print('They try to get the it from a local file, and download')
+print("it from the website if that doesn't exist.")
+print()
+print("This script sets up the environment variables and makes")
+print("the 'session' file and the 'inputs' directory.")
+print()
+
+
 if 'inputs' not in os.listdir():
     os.mkdir('inputs')
 
 with open('session.txt', 'w'):
     pass
 
-print(f'{os.getcwd()}')
-
 with open('.env', 'w') as f:
     f.write(f'P={os.getcwd()}\n')
     f.write('SESSION_FILE=${P}/session.txt\n')
     f.write('INPUT_DIR=${P}/inputs\n')
 
-print('now just install the extension, log in, click the button,')
-print('and paste the command you get here.')
+print('Setup complete.')
+print()
+print('To populate the session file, install the extension,')
+print("make sure you're logged in to adventofcode, click the button")
+print('in the extension popup, and paste the command you get here.')
+print()
+print('After that, to test, you can run python/common.py:')
+print()
+print('python python/common.py 2021 11')
+print()
+print("It should be slower in the first run.")
+print()
 
