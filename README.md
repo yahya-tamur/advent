@@ -1,3 +1,15 @@
+----------
+I might update this readme too.
+Run 'python setup-downloads.py and follow instructions there to set up
+downloads.
+
+rust solutions in /rust, python solutions in /python, /extension is a chrome
+extension to make setting up downloads faster.
+
+below was written mostly for the rust part.
+
+-----
+
 Has all the solutions for 2022, some for 2021.
 
 Some earlier days don't have a clear answer

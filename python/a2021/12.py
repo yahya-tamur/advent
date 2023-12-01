@@ -26,7 +26,7 @@ while paths:
             p_.append(s)
             paths.append(p_)
 
-print(f'part1: {completed_paths}')
+print(f'part 1: {completed_paths}')
 
 completed_paths = 0
 paths = [(['start'], False)]
@@ -46,6 +46,6 @@ while paths:
             p_.append(s)
             paths.append((p_, True))
 
-print(f'part2: {completed_paths}')
+print(f'part 2: {completed_paths}')
 
 

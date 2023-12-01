@@ -21,7 +21,7 @@ for (d, s) in folds:
             fdots.add((r,min(c,2*s-c)))
     dots = fdots
     if first:
-        print(f'part1: {len(dots)}')
+        print(f'part 1: {len(dots)}')
         first = False
 
 (n, m) = (max(x[0] for x in dots)+1, max(x[1] for x in dots)+1)
@@ -30,7 +30,7 @@ board = [[' ' for _ in range(m)] for _ in range(n) ]
 for (r, c) in dots:
     board[r][c] = '#'
 
-print('part2:')
+print('part 2:')
 for c in range(m):
     for r in range(n):
         print(board[r][c], end='')
