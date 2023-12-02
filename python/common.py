@@ -21,6 +21,10 @@ def get_problem(year, day):
 
     return open(f'{inputs}/a{year}/{day}.txt').read()
 
+def get_problem_lines(year, day):
+    return [s for s in get_problem(year, day).split('\n') if s]
+
+
 if __name__ == '__main__':
     import sys
     if len(sys.argv) < 3:

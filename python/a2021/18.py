@@ -1,63 +1,92 @@
-from common import get_problem
-from collections import defaultdict
+from common import get_problem_lines
 
-input = eval("[[[[[9,8],1],2],3],4]")
+def tosn(s):
+    return [int(c) if c.isdigit() else c for c in s]
 
-# node: something like [0,1,1]
+def psn(sn):
+    for c in sn:
+        print(c,end='')
+    print()
 
-# parse = eval!!
-
-# things:
-
-p = dict() # id -> id(parent)
-l = dict() # id -> id(left)
-r = dict() # id -> id(right)
-
-val = dict() # id -> list. necessary?
-current = 0
-
-def visit(lst):
-    global p, l, r, current
-
-    # use current as id
-    id = current
-    val[id] = lst
-    current += 1
-
-    if type(lst) is list:
-        l[id] = visit(lst[0])
-        p[l[id]] = id
-
-        r[id] = visit(lst[1])
-        p[r[id]] = id
-    else:
-        l[id] = -1
-        r[id] = -1
-
-    return id
-
-p[0] = -1
-visit(input)
-
-def explode():
-    node = 0
+def explode(sn):
     depth = 0
-    def find(m, depth):
-        if l[m] == -1:
-            return -1
-        if depth >= 4:
-            return m
-        if (v := find(l[m], depth+1)) != -1:
-            return v
-        return find(r[m], depth+1)
-    exp = find(0,0)
-    if exp == -1:
-        return False
-    # find prev node
+    k = None
+    for i in range(len(sn)):
+        if sn[i] == '[':
+            depth += 1
+        if sn[i] == ']':
+            depth -= 1
+        if depth > 4 and isinstance(sn[i],int) and sn[i+1] == ',' and isinstance(sn[i+2],int) :
+            k = i
+            break
+    if k == None:
+        return (False, sn)
+    for j in range(k-1,-1,-1):
+        if isinstance(sn[j], int):
+            sn[j] += sn[k]
+            break
+    for j in range(k+3,len(sn)):
+        if isinstance(sn[j], int):
+            sn[j] += sn[k+2]
+            break
+    sn = sn[:k-1] + [0] + sn[k+4:]
+    return (True, sn)
 
-    print(find(0, 0), val[find(0,0)])
-    #node = input
-    #depth = 0
-    #fo
+def split(sn):
+    k = None
+    for (i, c) in enumerate(sn):
+        if isinstance(c, int) and c >= 10:
+            k = i
+            break
+    if k == None:
+        return (False, sn)
+    l, r = sn[k] // 2, (sn[k] - (sn[k] // 2 ))
+    sn = sn[:k] + ['[',l ,',', r, ']'] + sn[k+1:]
+    return (True, sn)
 
-explode()
+def add(sn1, sn2):
+    return ['['] + sn1 + [','] + sn2 + [']']
+
+def simplify(sn):
+    while True:
+        c, sn = explode(sn)
+        if c:
+            continue
+        c, sn = split(sn)
+        if not c:
+            return sn
+
+def magnitude(sn):
+    k = 1
+    ans = 0
+    for c in sn:
+        if c == '[':
+            k = k * 3
+        if c == ',':
+            k = k // 3
+            k = k * 2
+        if c == ']':
+            k = k // 2
+        if isinstance(c, int):
+            ans += k*c
+    return ans
+
+lines = [simplify(tosn(x)) for x in get_problem_lines(2021,18)]
+
+
+sn = lines[0]
+for line in lines[1:]:
+    sn = simplify(add(sn, line))
+print(f'part 1: {magnitude(sn)}')
+
+ans = 0
+for i in range(len(lines)):
+    for j in range(len(lines)):
+        if i == j:
+            continue
+        ans = max(ans, magnitude(simplify(add(lines[i],lines[j]))))
+
+print(f'part 2: {ans}')
+
+
+
