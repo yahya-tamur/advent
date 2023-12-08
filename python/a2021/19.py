@@ -21,7 +21,7 @@ def rotlist(vl, rot):
 
 scanners = list()
 
-for line in get_problem_lines(2021,19):
+for line in get_problem_lines():
     if line.find('scanner') != -1:
         scanners.append([])
     if line.find(',') != -1:

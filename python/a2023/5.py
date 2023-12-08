@@ -1,6 +1,6 @@
 from common import get_problem_lines
 
-l = get_problem_lines(2023,5)
+l = get_problem_lines()
 
 seeds = [int(x) for x in l[0].split(' ')[1:]]
 

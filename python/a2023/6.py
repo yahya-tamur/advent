@@ -2,7 +2,7 @@ from common import get_problem_lines
 from math import sqrt, ceil
 
 times, dists  = [[x for x in line.split(' ')[1:] if x] for line in \
-         get_problem_lines(2023,6)]
+         get_problem_lines()]
 
 def solve(n,m):
     r = sqrt(n*n - 4*m)/2

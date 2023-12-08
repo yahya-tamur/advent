@@ -1,6 +1,6 @@
 from common import get_problem
 
-input = get_problem(2021, 16)
+input = get_problem()
 #input = "9C0141080250320F1802104A08"
 # convert to binary
 hdict = dict()

@@ -3,7 +3,7 @@ from collections import defaultdict
 
 ans1 = 0
 ans2 = 0
-for line in get_problem_lines(2023, 2):
+for line in get_problem_lines():
     id = int(line[4:line.find(':')])
     line = line[line.find(':')+2:]
     d = defaultdict(int)

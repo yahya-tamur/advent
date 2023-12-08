@@ -1,6 +1,6 @@
 from common import get_problem
 
-input = get_problem(2021, 15)
+input = get_problem()
 #input = """1163751742
 #1381373672
 #2136511328

@@ -1,7 +1,7 @@
 from common import get_problem
 import re
 
-input = get_problem(2021, 17)
+input = get_problem()
 #input = "target area: x=20..30, y=-10..-5\n"
 
 m = re.match(".*x=(?P<x1>.*)\.\.(?P<x2>.*),.*y=(?P<y1>.*)\.\.(?P<y2>.*)\n",

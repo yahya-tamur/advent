@@ -1,5 +1,5 @@
 from common import get_problem_lines
-start = [ int(line.split(':')[1]) - 1 for line in get_problem_lines(2021,21) ]
+start = [ int(line.split(':')[1]) - 1 for line in get_problem_lines() ]
 # player = [3, 7]
 
 player = [start[0], start[1]]

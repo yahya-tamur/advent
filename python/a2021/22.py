@@ -34,7 +34,7 @@ def total_vol(cs):
 
 part1done = False
 
-s = get_problem_lines(2021, 22)
+s = get_problem_lines()
 for line in s:
     line = line.replace(" x=","|").replace("..","|").replace(",y=","|").replace(",z=","|")
     if (not part1done) and len(line) > 30:

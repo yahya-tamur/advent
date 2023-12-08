@@ -1,7 +1,7 @@
 from common import get_problem
 
 c = dict()
-for line in get_problem(2021, 12).split('\n'):
+for line in get_problem().split('\n'):
     if not line:
         continue
     (l, r) = line.split('-')

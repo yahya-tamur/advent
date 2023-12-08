@@ -71,7 +71,7 @@ def magnitude(sn):
             ans += k*c
     return ans
 
-lines = [simplify(tosn(x)) for x in get_problem_lines(2021,18)]
+lines = [simplify(tosn(x)) for x in get_problem_lines()]
 
 
 sn = lines[0]

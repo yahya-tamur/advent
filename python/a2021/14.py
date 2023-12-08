@@ -1,7 +1,7 @@
 from common import get_problem
 from collections import defaultdict
 
-input = get_problem(2021, 14)
+input = get_problem()
 
 input = input.split('\n')
 

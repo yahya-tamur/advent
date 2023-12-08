@@ -1,6 +1,6 @@
 from common import get_problem_lines
 
-s = get_problem_lines(2021,20)
+s = get_problem_lines()
 
 code = [1 if c == '#' else 0 for c in s[0]]
 s = s[1:]

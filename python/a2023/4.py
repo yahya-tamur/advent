@@ -1,6 +1,6 @@
 from common import get_problem_lines
 
-s = get_problem_lines(2023, 4)
+s = get_problem_lines()
 
 part1 = 0
 part2 = [1 for _ in s]

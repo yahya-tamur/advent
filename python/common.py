@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import requests
 import os
+import sys
 
 load_dotenv()
 
@@ -10,7 +11,13 @@ session = session[:-1]
 
 inputs = os.getenv('INPUT_DIR')
 
-def get_problem(year, day):
+def get_problem(year=0, day=0):
+    if year==0:
+        # no idea if this is safe lmao
+        # but it worked on 'python 7.py' and 'python a2021/7.py'
+        fullpath = (os.getcwd() + '/' +  sys.argv[0]).split('/')
+        year = int(fullpath[-2][1:])
+        day = int(fullpath[-1][:-3])
     if f'a{year}' not in os.listdir(inputs):
         os.mkdir(f'{inputs}/a{year}')
     if f'{day}.txt' not in os.listdir(f'{inputs}/a{year}'):
@@ -21,13 +28,42 @@ def get_problem(year, day):
 
     return open(f'{inputs}/a{year}/{day}.txt').read()
 
-def get_problem_lines(year, day):
-    return [s for s in get_problem(year, day).split('\n') if s]
+def get_problem_lines(year=0, day=0):
+    return [s for s in get_problem(year=year, day=day).split('\n') if s]
+
+def post_problem(year, day, level, ans):
+    print(f"Sending {ans}")
+    resp = requests.post(f'https://adventofcode.com/{year}/day/{day}/answer', \
+            {'level' : str(level), 'answer': str(ans) },
+            cookies={'session':session})
+    start, end = "<article>", "</article>"
+    l = resp.text.find(start) + len(start)
+    r = resp.text.find(end, l)
+    ans = resp.text[l:r]
+    while ans.find('<') != -1:
+        ans = ans[:ans.find('<')] + ans[ans.find('>')+1:]
+    splitans = []
+    while ans:
+        i = ans.rfind(' ',0,80)
+        if i == 0 or len(ans) < 80:
+            i = len(ans)
+        splitans.append(ans[:i].strip())
+        ans = ans[i:]
+    return '\n'.join(splitans)
+
 
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) < 3:
-        print('example usage:\npython common.py 2021 11')
-        sys.exit()
-    print(get_problem(sys.argv[1],sys.argv[2]))
+    #if len(sys.argv) < 3:
+        #print('example usage:\npython common.py 2021 11')
+        #sys.exit()
+    if len(sys.argv) == 3:
+        print(get_problem(sys.argv[1],sys.argv[2]))
+    elif len(sys.argv) == 5:
+        print(post_problem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
+    else:
+        print("To get:")
+        print("python common.py <year> <day>")
+        print("To post:")
+        print("python common.py <year> <day> <level> <answer>")

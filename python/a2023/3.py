@@ -2,7 +2,7 @@ from common import get_problem
 from collections import defaultdict
 
 
-s = [list(line) + ['.'] for line in get_problem(2023, 3).split('\n') if line]
+s = [list(line) + ['.'] for line in get_problem().split('\n') if line]
 s += [['.']*len(s[0])]
 
 partsum = 0

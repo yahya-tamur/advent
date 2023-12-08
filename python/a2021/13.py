@@ -2,7 +2,7 @@ from common import get_problem
 
 dots = set()
 folds = list()
-for line in get_problem(2021,13).split('\n'):
+for line in get_problem().split('\n'):
     if not line:
         continue
     if (k := line.find('=')) != -1:
