@@ -11,7 +11,9 @@ session = session[:-1]
 
 inputs = os.getenv('INPUT_DIR')
 
-def get_problem(year=0, day=0):
+def get_problem(year=0, day=0, file=""):
+    if file:
+        return open(file).read()
     if year==0:
         # no idea if this is safe lmao
         # but it worked on 'python 7.py' and 'python a2021/7.py'
@@ -28,8 +30,9 @@ def get_problem(year=0, day=0):
 
     return open(f'{inputs}/a{year}/{day}.txt').read()
 
-def get_problem_lines(year=0, day=0):
-    return [s for s in get_problem(year=year, day=day).split('\n') if s]
+def get_problem_lines(year=0, day=0, file=""):
+    return [s for s in get_problem(year=year, day=day, file=file).split('\n') \
+            if s]
 
 def post_problem(year, day, level, ans):
     print(f"Sending {ans}")
