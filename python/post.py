@@ -13,6 +13,9 @@ print(f"Day {day} on {year}")
 with open(file) as contents:
     code = "from common import post_problem\n" + contents.read()
 
+    if code.find("get_problem(file") != -1 or \
+            code.find("get_problem_lines(file") != -1:
+        print("It looks like the solution gets problem from a file.")
     code = code.replace("get_problem()", f"get_problem(year={year},day={day})")
     code = code.replace("get_problem_lines()", \
             f"get_problem_lines(year={year},day={day})")
