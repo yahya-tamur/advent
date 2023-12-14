@@ -1,57 +1,76 @@
-----------
-I might update this readme too.
-Run 'python setup-downloads.py and follow instructions there to set up
-downloads.
+Contents, Organization
+---------
+This repository contains solutions to problems on adventofcode.com.
 
-rust solutions in /rust, python solutions in /python, /extension is a chrome
-extension to make setting up downloads faster.
+Right now, it contains almost all to solutions for 2021, all the solutions for
+2022, and solutions for all the released problems for 2023.
 
-below was written mostly for the rust part.
+Each user on the webiste gets a different input for each problem, and a
+'solution' consists of finding an solution for that input and submitting
+it to the website.
 
+This repository contains some code to help organize the inputs:
+
+Both python and rust folders contain code for downloading the inputs from the
+website to access them locally from the code. You can run `python setup-downloads.py` to
+set this up. It will create an 'inputs' folder for the inputs to get downloaded
+into and a 'session.txt' file to put the user session cookie from the website into.
+
+The `extension` folder contains an unpacked chrome extension. With this installed,
+you can click a button to copy a command that populates the nearest session.txt
+file with the session cookie of the website.
+
+You can then go the the python folder and run the `common.py` script to make
+sure it works correctly.
+
+The `rust` and `python` folders contain solutions in rust and python respectively.
+
+The `common` module from both folders have a function called `get_problem`. This
+will download the input to the problem to `/inputs/a<year>/<day>.txt` if it's not
+already there, and return the contents of that file.
+
+All the solutions, in both rust and python, should print something like
+```
+part 1: <solution to part 1>
+part 2: <solution to part 2>
+```
+when run.
+
+The python folder also contains a `post.py` script which will find the problem
+file with the most recent changes, change the code to post the solution to
+the latest part to the website instead of just printing it, and run the changed
+code.
+
+I did the problems for 2022 and then the start of 2021 in rust, then switched
+over to python. There might also be a few more recent solutions in rust if I
+thought it was an interesting problem to try to optimize further.
+
+Notes for the rust folder:
 -----
+This is a workspace, with different crates for each year and a crate
+for common functions.
 
-Has all the solutions for 2022, some for 2021.
-
-Some earlier days don't have a clear answer
-for part 1 as well as part 2 -- I might refactor
-some of them.
-
-'common' includes a small library for running
-a graph search algorithm in parallel and a function for
-fetching the input from a local file, downloading
-it from the website if the file isn't there.
-
-To use, make a file containing the browser session*, and
-a folder to download the inputs into. Add a .env
-file in the root directory containing the paths to these,
-under the environment variables `INPUT_DIR`, `SESSION_FILE`.
-
-The .env file is read at compile time, and I think it's
-preferable to put absolute paths there.
-
-For example, to run the solution to day 7 from 2022,
-cd into the a2022 directory and run
+The crates for each year contain binaries named after the day they're for.
+To run the solution to day 7 from 2022, cd into the a2022 directory and run
 
 ```cargo run -r --bin 07```
 
-Which should print out the answer for both parts.
+In addition to the code for getting the inputs, the 'common' crate includes
+a library for running a graph search algorithm in parallel.
 
-I feel like I spent a bit too much time thinking about the project
-structure and came up with something worse than anything I could have
-come up with in the beginning. It's awkward to have binaries with the
-same names. You can't build everything from the root directory (without
-warnings) and since the executables are in the root target directory,
-it's hard to tell what 'target/release/01' actually is.
+-----
+Notes for the python folder:
+-----
+The way I included `common` and `post` in the code is by having symlinks in the folder
+for each year.
 
-However, I
-like that when I'm working on a solution in an a20xx directory, I don't
-have to rewrite the year when running the binary or starting a new solution.
-It's also nice to start a completely new project every 25 problems, while
-being able to share some code if I need to. I'm really happy with how all the
-inputs from all the years are in a single folder that's automatically
-managed.
+You can cd into `a<year>` and run
+```python <day>.py```
+to print the answers to that day from that year.
 
-* I also made a chrome extension for getting this. Add the extension in the
-'extension' folder, click the icon on the chrome top bar, and click 'copy
-command'. Paste the command to replace the closest file named 'session.txt' in
-the ancestors of the current directory.
+You can run `python post.py` from a year folder to find the most recently updated day file,
+change the code to post the latest part instead of just printing it, and run the changed code.
+Run `python post.py print` to print the changed code if you'd like to look at it before running it.
+
+You can run `common.py` standalone to print the input for a given day or post a solution
+to a given day and part. Run `python common.py` to see the correct command line inputs.
