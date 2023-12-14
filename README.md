@@ -58,7 +58,6 @@ To run the solution to day 7 from 2022, cd into the a2022 directory and run
 In addition to the code for getting the inputs, the 'common' crate includes
 a library for running a graph search algorithm in parallel.
 
------
 Notes for the python folder:
 -----
 The way I included `common` and `post` in the code is by having symlinks in the folder
@@ -74,3 +73,9 @@ Run `python post.py print` to print the changed code if you'd like to look at it
 
 You can run `common.py` standalone to print the input for a given day or post a solution
 to a given day and part. Run `python common.py` to see the correct command line inputs.
+
+One functionality I use while developing an answer is that `get_problem` and `get_problem_lines`
+both take an optional 'file' input. So to test the solution on the simpler test cases often given
+by the website, you can make a 'input' file, copy the test case into it, then use
+`get_problem_lines(file="input")`. The `post.py` script will automatically replace this to get the
+actual input instead.
