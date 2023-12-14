@@ -13,23 +13,23 @@ print(f"Day {day} on {year}")
 with open(file) as contents:
     code = "from common import post_problem\n" + contents.read()
 
-    if code.find("get_problem(file") != -1 or \
-            code.find("get_problem_lines(file") != -1:
-        print("It looks like the solution gets problem from a file.")
-    code = code.replace("get_problem()", f"get_problem(year={year},day={day})")
-    code = code.replace("get_problem_lines()", \
-            f"get_problem_lines(year={year},day={day})")
+    for start in ["get_problem(", "get_problem_lines("]:
+        if (l := code.find(start)) != -1:
+            l = l + len(start)
+            r = code.find(")", l)
+            code = code[:l] + f"year={year},day={day}" + code[r:]
 
     for i in range(2,0,-1):
-        start_pattern = f"print(f\"part {i}: {{"
-        start = code.rfind(start_pattern) + len(start_pattern)
-        if start == -1 + len(start_pattern):
+        start = f"print(f\"part {i}: {{"
+        if (l := code.rfind(start)) == -1:
             continue
+        l = l + len(start)
         print(f"Posting part {i}")
-        end = code.rfind('}")', 0, code.find("\n", start))
-        injected = code[:start] + f"post_problem({year}, {day}, {i}, " + \
-                code[start:end] + ")" + code[end:]
+        r = code.rfind('}")', 0, code.find("\n", l))
+        injected = code[:l] + f"post_problem({year}, {day}, {i}, " + \
+                code[l:r] + ")" + code[r:]
 
+        #print(injected)
         exec(injected)
         sys.exit()
 
