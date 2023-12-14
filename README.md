@@ -56,7 +56,8 @@ To run the solution to day 7 from 2022, cd into the a2022 directory and run
 ```cargo run -r --bin 07```
 
 In addition to the code for getting the inputs, the 'common' crate includes
-a library for running a graph search algorithm in parallel.
+a library for running a graph search algorithm in parallel. See days 16 and
+19 from 2022 for examples of how it's used.
 
 Notes for the python folder:
 -----
