@@ -3,3 +3,4 @@ inputs
 session.txt
 .env
 **/__pycache__/*
+python/**/input

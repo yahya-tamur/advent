@@ -14,13 +14,15 @@ with open(file) as contents:
     code = "from common import post_problem\n" + contents.read()
 
     for start in ["get_problem(", "get_problem_lines("]:
-        if (l := code.find(start)) != -1:
+        f = 0
+        while (l := code.find(start,f)) != -1:
             l = l + len(start)
             r = code.find(")", l)
             code = code[:l] + f"year={year},day={day}" + code[r:]
+            f = r+1
 
     for i in range(2,0,-1):
-        start = f"print(f\"part {i}: {{"
+        start = f'print(f"part {i}: {{'
         if (l := code.rfind(start)) == -1:
             continue
         l = l + len(start)
@@ -29,8 +31,10 @@ with open(file) as contents:
         injected = code[:l] + f"post_problem({year}, {day}, {i}, " + \
                 code[l:r] + ")" + code[r:]
 
-        #print(injected)
-        exec(injected)
+        if 'print' in sys.argv:
+            print(injected)
+        else:
+            exec(injected)
         sys.exit()
 
 print("Could not find a part to post!")
