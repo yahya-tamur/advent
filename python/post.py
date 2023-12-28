@@ -13,7 +13,7 @@ print(f"Day {day} on {year}")
 with open(file) as contents:
     code = "from common import post_problem\n" + contents.read()
 
-    for start in ["get_problem(", "get_problem_lines("]:
+    for start in ["get_problem(", "get_problem_lines(", "gp(", "gpl("]:
         f = 0
         while (l := code.find(start,f)) != -1:
             l = l + len(start)

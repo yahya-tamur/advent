@@ -55,6 +55,9 @@ def post_problem(year, day, level, ans):
     return '\n'.join(splitans)
 
 
+gp = get_problem
+gpl = get_problem_lines
+
 
 if __name__ == '__main__':
     import sys
