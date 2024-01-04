@@ -7,7 +7,7 @@ load_dotenv()
 
 session = open(os.getenv('SESSION_FILE')).read()
 # remove new line
-session = session[:-1]
+session = session.strip()
 
 inputs = os.getenv('INPUT_DIR')
 
@@ -20,13 +20,24 @@ def get_problem(year=0, day=0, file=""):
         fullpath = (os.getcwd() + '/' +  sys.argv[0]).split('/')
         year = int(fullpath[-2][1:])
         day = int(fullpath[-1][:-3])
-    if f'a{year}' not in os.listdir(inputs):
-        os.mkdir(f'{inputs}/a{year}')
-    if f'{day}.txt' not in os.listdir(f'{inputs}/a{year}'):
+
+    if f'a{year}' not in os.listdir(inputs) or \
+            f'{day}.txt' not in os.listdir(f'{inputs}/a{year}'):
         r = requests.get(f'https://adventofcode.com/{year}/day/{day}/input',
                          cookies={'session':session})
-        with open(f'{inputs}/a{year}/{day}.txt', 'w') as file:
-            file.write(r.text)
+        if r.ok:
+            if f'a{year}' not in os.listdir(inputs):
+                os.mkdir(f'{inputs}/a{year}')
+            with open(f'{inputs}/a{year}/{day}.txt', 'w') as file:
+                file.write(r.text)
+        else:
+            print("Error getting problem. Received:")
+            print()
+            print(r.text)
+            print()
+            print("Maybe the session is expired?")
+            print()
+            sys.exit()
 
     return open(f'{inputs}/a{year}/{day}.txt').read()
 
@@ -55,21 +66,30 @@ def post_problem(year, day, level, ans):
     return '\n'.join(splitans)
 
 
+#put somewhere else?
+def rl(x):
+    return range(len(x))
+
+
 gp = get_problem
 gpl = get_problem_lines
 
 
 if __name__ == '__main__':
-    import sys
-    #if len(sys.argv) < 3:
-        #print('example usage:\npython common.py 2021 11')
-        #sys.exit()
-    if len(sys.argv) == 3:
-        print(get_problem(sys.argv[1],sys.argv[2]))
-    elif len(sys.argv) == 5:
-        print(post_problem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
+    if 'get' in sys.argv:
+        print(get_problem(sys.argv[2],sys.argv[3]))
+    elif 'post' in sys.argv:
+        print(post_problem(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]))
+    elif 'refresh' in sys.argv:
+        try:
+            os.remove(f'{inputs}/a{sys.argv[2]}/{sys.argv[3]}.txt')
+        except FileNotFoundError:
+            pass
+        print(get_problem(sys.argv[2],sys.argv[3]))
     else:
         print("To get:")
-        print("python common.py <year> <day>")
+        print("python common.py get <year> <day>")
         print("To post:")
-        print("python common.py <year> <day> <level> <answer>")
+        print("python common.py post <year> <day> <level> <answer>")
+        print("To get from the internet:")
+        print("python common.py refresh <year> <day>")
