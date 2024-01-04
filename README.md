@@ -39,9 +39,10 @@ file with the most recent changes, change the code to post the solution to
 the latest part to the website instead of just printing it, and run the changed
 code.
 
-I did the problems for 2022 and then the start of 2021 in rust, then switched
-over to python. There might also be a few more recent solutions in rust if I
-thought it was an interesting problem to try to optimize further.
+The order in which I did the problems is 2022, then 2021 and 2023 around about the
+same time, then 2020. I switched to python a little bit after I started 2021,
+though I did some problems in rust if I thought they were interesting to try to
+optimize.
 
 Notes for the rust folder:
 -----
