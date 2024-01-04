@@ -8,6 +8,7 @@ file = max((file for file in os.scandir() if numfile(file)), key=mtime)
 
 year = os.getcwd()[-4:]
 day = file.name[:-3]
+day = int(day[0])*10 + int(day[1]) # leading zeroes :)
 print(f"Day {day} on {year}")
 
 with open(file) as contents:
