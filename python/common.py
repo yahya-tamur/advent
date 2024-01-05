@@ -66,11 +66,6 @@ def post_problem(year, day, level, ans):
     return '\n'.join(splitans)
 
 
-#put somewhere else?
-def rl(x):
-    return range(len(x))
-
-
 gp = get_problem
 gpl = get_problem_lines
 
