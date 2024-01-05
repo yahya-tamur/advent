@@ -2,10 +2,10 @@ add = [lambda t0, t1: (t0[0]+t1[0],t0[1]+t1[1],t0[2]+t1[2]), \
         lambda t0, t1: (t0[0]+t1[0],t0[1]+t1[1],t0[2]+t1[2],t0[3]+t1[3])]
 
 surr = [{(a, b, c) for a in range(-1,2) for b in range(-1,2) \
-        for c in range(-1,2) if not (a, b, c) == (0, 0, 0)}, \
+        for c in range(-1,2) if (a, b, c) != (0, 0, 0)}, \
         {(a, b, c, d) for a in range(-1,2) for b in range(-1,2) \
         for c in range(-1,2) for d in range(-1,2) \
-        if not (a, b, c, d) == (0, 0, 0, 0)}]
+        if (a, b, c, d) != (0, 0, 0, 0)}]
 
 from common import gpl
 

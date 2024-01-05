@@ -13,7 +13,7 @@ for rline in rules.split('\n'):
     p1rudi |= {(a,b),(c,d)}
     labels.append(label)
 
-_, _, yours = yours.partition('\n')
+yours = yours[yours.find('\n')+1:]
 yours = [int(i) for i in yours.split(',')]
 
 nearby = [[int(i) for i in n.split(',')] for n in nearby.split('\n')[1:] if n]

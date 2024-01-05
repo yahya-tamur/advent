@@ -2,6 +2,10 @@ from common import gpl
 
 me, buses = gpl()
 
+# 🌟🌟🌟
+# Solution isn't too interesting but I was confused about problems that asked
+# something like this in problems I did before.
+
 me = int(me)
 buses = [int(bus) for bus in buses.split(',') if bus != 'x']
 
