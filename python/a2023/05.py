@@ -24,7 +24,7 @@ for seed in seeds:
 print(f"part 1: {m}")
 
 # this bs worked first try!! !!
-# I feel like it have some sort of problem it it
+# I feel like it should have some sort of problem it it
 def filt_range(filter, ranges):
     unmapped = ranges.copy()
     mapped = list()

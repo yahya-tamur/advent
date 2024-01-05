@@ -15,6 +15,7 @@ for line in get_problem_lines():
     (l, r) = line.split('~')
     cubes.append([int(c) for c in l.split(',') + r.split(',')])
 
+# 🌟🌟🌟
 # this also topologically sorts the graph later!!!
 cubes.sort(key=lambda cube: cube[2])
 occupied = set()

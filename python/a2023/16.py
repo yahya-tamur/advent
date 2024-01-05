@@ -2,7 +2,7 @@ from common import get_problem_lines
 
 map = [list(line) for line in get_problem_lines()]
 
-# didn't spped up as much as I thought it would.
+# didn't speed up as much as I thought it would.
 r, l, u, d = 1, 2, 4, 8
 
 def get_ans(init):

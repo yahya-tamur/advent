@@ -39,8 +39,3 @@ for gear in gears.values():
         gearsum += gear[0] * gear[1]
 
 print(f'part 2: {gearsum}')
-
-#for line in s:
-    #for c in line:
-        #print(c,end='')
-    #print()

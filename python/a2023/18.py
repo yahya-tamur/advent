@@ -22,6 +22,8 @@ area = abs(integral) + (perimeter // 2 + 1)
 print(f"part 1: {area}")
 
 perimeter = 0
+# I really liked Green's Theorem when I first learned it, but in hindsight
+# it's not that difficult to see why it works, especially in this simple case.
 integral = 0
 depth = 0
 for line in get_problem_lines(file="input"):

@@ -16,4 +16,3 @@ for line in get_problem_lines():
     ans2 += d['red'] * d['green'] * d['blue']
 print(f'part 1: {ans1}')
 print(f'part 2: {ans2}')
-        #d = { r: int(l) for s in l.strip().split(', ') for [l, r] in s.strip().split(' ')}

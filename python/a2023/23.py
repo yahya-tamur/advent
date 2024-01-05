@@ -25,7 +25,7 @@ while paths:
 
 print(f"part 1: {maxlen - 1}")
 
-# flatten graph
+# collapses long sequences of edges
 # wouldn't be accurate if longest path didn't end in a node with one edge.
 nodes = {c for c in map}
 edges = {c: set() for c in nodes}
