@@ -23,7 +23,6 @@ for line in gpl():
         himask = int(line[-36:].replace('X','0'), base=2)
         lomask = int(line[-36:].replace('X','1'), base=2)
         mask = line[-36:]
-        print(mask)
         continue
     loc, val = int(line[4:line.find(']')]), int(line[line.find('=')+2:])
     mem1[loc] = (val | himask) & lomask

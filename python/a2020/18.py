@@ -2,16 +2,14 @@ from common import gpl
 
 # 🌟🌟🌟
 # Concise parser-free implementation.
-# The way the precedence is done in part 2 is similar to
-# the way you would implement precedence with a parser.
+# The way the precedence is done in part 2 is similar to the way you would
+# implement precedence with a parser.
 
 def get_seq1(s):
     spaces = [i for i in range(len(s)) if s[i] == ' ']
     if len(spaces) < 3:
         return eval(s)
     return get_seq1(str(eval(s[:spaces[2]])) + s[spaces[2]:])
-
-print(get_seq1("3 + 4 + 5 + 6"))
 
 def get_seq2(s):
     if s.find('*') == -1:

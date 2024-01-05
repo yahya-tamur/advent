@@ -4,7 +4,10 @@ from common import gp
 # I thought about this a little bit and came up with this very simple solution.
 # I'm not sure if it's actually efficient but runs on 0.2s real and 0.004s sys,
 # on par with rust solution on reddit. Maybe it would be less efficient with
-# more recursive grammars?
+# more recursive grammars? len(ans_) is almost always 0 or 1 here. It probably
+# isn't much worse though, since len(ans_) is less than the length of the input. 
+
+# doesn't memoize, and that could make it faster.
 
 # get_rule(s, i, <rule num>) returns set of numbers j such that s[i:j] matches
 # the rule.
@@ -12,7 +15,7 @@ from common import gp
 
 rules = dict()
 for line in gp().split('\n\n')[0].split('\n'):
-    l, _, r = line.partition(': ')
+    l, r = line.split(': ')
     rules[int(l)] = r
 
 def get_rule_seq(s, i, rule):
@@ -33,7 +36,7 @@ def get_rule(s, i, num):
         else:
             return set()
     if '|' in rule:
-        l, _, r = rule.partition(' | ')
+        l, r = rule.split(' | ')
         return get_rule_seq(s, i, l) | get_rule_seq(s, i, r)
 
     return get_rule_seq(s, i, rule)

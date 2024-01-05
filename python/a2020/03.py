@@ -1,5 +1,5 @@
 from common import get_problem_lines
-input = [list(line) for line in get_problem_lines(file="input")]
+input = [list(line) for line in get_problem_lines()]
 
 slopes = [1, 3, 5, 7]
 ans = [0,0,0,0,0]
