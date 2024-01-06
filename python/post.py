@@ -1,4 +1,3 @@
-import os
 import sys
 
 from init_injection import init_injection
