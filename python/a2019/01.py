@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 
 f = lambda i: (i // 3) - 2
 

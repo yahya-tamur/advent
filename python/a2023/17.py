@@ -7,7 +7,7 @@
 
 #I'll use complex numbers for directions next time.
 
-from common import get_problem_lines
+from problem import get_problem_lines
 from math import inf
 import heapq as h
 from sys import exit

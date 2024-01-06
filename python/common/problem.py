@@ -81,8 +81,8 @@ if __name__ == '__main__':
         print(get_problem(sys.argv[2],sys.argv[3]))
     else:
         print("To get:")
-        print("python common.py get <year> <day>")
+        print("python problem.py get <year> <day>")
         print("To post:")
-        print("python common.py post <year> <day> <level> <answer>")
+        print("python problem.py post <year> <day> <level> <answer>")
         print("To get from the internet:")
-        print("python common.py refresh <year> <day>")
+        print("python problem.py refresh <year> <day>")

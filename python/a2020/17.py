@@ -7,7 +7,7 @@ surr = [{(a, b, c) for a in range(-1,2) for b in range(-1,2) \
         for c in range(-1,2) for d in range(-1,2) \
         if (a, b, c, d) != (0, 0, 0, 0)}]
 
-from common import gpl
+from problem import gpl
 
 map = [{(i, j, 0) for i, line in enumerate(gpl()) for j, c in enumerate(line) \
         if c == '#'}, \

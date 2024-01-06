@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 from collections import defaultdict
 
 ans1 = 0

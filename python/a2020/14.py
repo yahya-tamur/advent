@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 
 # -1 in python is very cool for bitwise operations.
 

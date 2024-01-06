@@ -1,4 +1,4 @@
-from common import gp
+from problem import gp
 from intcode import execute
 
 code = [int(i) for i in gp().strip().split(',')]

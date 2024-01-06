@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 
 vx = [(1,0,0),(-1,0,0),(0,1,0),(0,-1,0),(0,0,1),(0,0,-1)]
 

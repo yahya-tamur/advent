@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 
 seqs = [[int(x) for x in line.split(' ')] for line in get_problem_lines()]
 

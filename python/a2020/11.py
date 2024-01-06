@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 
 map = {i + j*1j for i, line in enumerate(gpl()) for j, c in enumerate(line) \
         if c == 'L'}

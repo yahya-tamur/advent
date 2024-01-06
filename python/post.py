@@ -1,10 +1,10 @@
 import sys
 
-from init_injection import init_injection
+from common.init_injection import init_injection
 
 year, day, code = init_injection()
 
-code = "from common import post_problem\n" + code
+code = "from problem import post_problem\n" + code
 for i in range(2,0,-1):
     start = f'print(f"part {i}: {{'
     if (l := code.rfind(start)) == -1:

@@ -1,4 +1,4 @@
-from common import get_problem
+from problem import get_problem
 
 part1 = 0
 part2 = 0

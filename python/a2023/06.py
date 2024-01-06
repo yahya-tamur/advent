@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 from math import sqrt, ceil
 
 times, dists  = [[x for x in line.split(' ')[1:] if x] for line in \

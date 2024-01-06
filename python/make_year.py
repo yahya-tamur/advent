@@ -23,10 +23,10 @@ except FileExistsError:
     print('Folder existed')
 
 try:
-    os.remove(f'a{year}/common.py')
+    os.remove(f'a{year}/problem.py')
 except FileNotFoundError:
     pass
 
-os.symlink('../common.py', f'a{year}/common.py')
+os.symlink('../common/problem.py', f'a{year}/problem.py')
 
-print('Created common.py symlink')
+print('Created problem.py symlink')

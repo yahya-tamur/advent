@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 from time import time
 
 key = {'.': 0, '^': -1, '>': 1j, 'v': 1, '<': -1j}

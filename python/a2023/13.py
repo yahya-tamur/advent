@@ -1,4 +1,4 @@
-from common import get_problem
+from problem import get_problem
 stars = get_problem().split('\n\n')
 stars = [[list(line) for line in star.split('\n') if line] for star in stars]
 

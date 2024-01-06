@@ -1,5 +1,5 @@
 #one of my favorite problems.
-from common import get_problem_lines
+from problem import get_problem_lines
 
 def cube_range(cube):
     def s2(a,b):

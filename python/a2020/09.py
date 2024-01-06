@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 from collections import deque
 from sys import exit
 

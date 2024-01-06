@@ -1,4 +1,4 @@
-from common import gp
+from problem import gp
 from collections import deque
 
 p1, p2 = [deque([int(i) for i in lines.split('\n')[1:]]) \

@@ -1,5 +1,5 @@
 import sys
-from init_injection import init_injection
+from common.init_injection import init_injection
 
 # Go to a year folder and run "python ../input.py" to run the
 # most recently changed solution on the input from the file named "input"

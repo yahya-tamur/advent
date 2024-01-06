@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 
 def tosn(s):
     return [int(c) if c.isdigit() else c for c in s]

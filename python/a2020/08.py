@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 from sys import exit
 
 instrs = [[line[:3], int(line[3:])] for line in gpl()]

@@ -7,7 +7,7 @@
 # OK JUST DO WHAT YOU'RE ACTUALLY SUPPOSED TO DO.
 
 # cubes = <six nums>
-from common import get_problem_lines
+from problem import get_problem_lines
 
 # returns list of cubes.
 def delete_cube(a, b):

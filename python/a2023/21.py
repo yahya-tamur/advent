@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 
 lines = get_problem_lines()
 n, m = len(lines), len(lines[0])

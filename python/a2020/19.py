@@ -1,4 +1,4 @@
-from common import gp
+from problem import gp
 
 # 🌟🌟🌟
 # I thought about this a little bit and came up with this very simple solution.

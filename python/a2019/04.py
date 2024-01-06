@@ -1,4 +1,4 @@
-from common import gp
+from problem import gp
 l, r = gp().strip().split('-')
 l, r = int(l), int(r)
 

@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 from collections import defaultdict
 
 moves = {'e': 1, 'w': -1, 'ne': 1j, 'sw': -1j, 'nw': -1+1j, 'se': 1-1j}

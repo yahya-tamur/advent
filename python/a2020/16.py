@@ -1,4 +1,4 @@
-from common import gp
+from problem import gp
 
 rules, yours, nearby = gp().split('\n\n')
 

@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 from copy import deepcopy
 
 map = [list(line) for line in get_problem_lines(file="input")]

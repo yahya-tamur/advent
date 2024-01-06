@@ -1,4 +1,4 @@
-from common import gp
+from problem import gp
 from collections import deque
 
 class Solve:

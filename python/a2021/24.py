@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 
 lines = [line.split(' ') for line in get_problem_lines()]
 sections = [lines[i:i+18] for i in range(0,len(lines),18)]

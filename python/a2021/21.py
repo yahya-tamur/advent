@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 start = [ int(line.split(':')[1]) - 1 for line in get_problem_lines() ]
 # player = [3, 7]
 

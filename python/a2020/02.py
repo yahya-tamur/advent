@@ -1,4 +1,4 @@
-from common import get_problem_lines
+from problem import get_problem_lines
 
 ans1, ans2 = 0, 0
 for line in get_problem_lines():

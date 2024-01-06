@@ -5,7 +5,8 @@ This repository contains solutions to problems on adventofcode.com.
 Right now, it contains all of the solutions for 2020, 2021, 2022, and 2023.
 
 Each user on the website gets a different input for each problem, and a
-'solution' consists of finding an solution for that input and submitting.
+'solution' consists of finding an solution for that input and submitting to the
+website.
 
 This repository contains some code to help organize the inputs:
 
@@ -19,7 +20,7 @@ The `extension` folder contains an unpacked chrome extension. With this
 installed, you can click a button to copy a command that populates the nearest
 session.txt file with the session cookie of the website.
 
-You can then go the the python folder and run the `common.py` script to make
+You can then go to `python/common` and run the `problem.py` script to make
 sure it works correctly.
 
 The `rust` and `python` folders contain solutions in rust and python
@@ -40,10 +41,9 @@ file with the most recent changes, change the code to post the solution to the
 latest part to the website instead of just printing it, and run the changed
 code.
 
-The order in which I did the problems is 2022, then 2021 and 2023 around about
-the same time, then 2020. I switched to python a little bit after I started
-2021, though I did some problems in rust if I thought they were interesting to
-try to optimize.
+I did 2022 first, then 2021 and 2023 together, then 2020. I switched to python
+a little bit after I started 2021, though I did some problems in rust if I
+thought they were interesting to try to optimize.
 
 Notes for the rust folder:
 -----
@@ -61,12 +61,11 @@ from 2022 for examples of how it's used.
 
 Notes for the python folder:
 -----
-The way I included `common` in the code is by having symlinks in the folder for
+The way I included `problem` in the code is by having symlinks in the folder for
 each year.
 
-You can cd into `a<year>` and run
-```python <day>.py```
-to print the answers to that day from that year.
+You can cd into `a<year>` and run ```python <day>.py``` to print the answers to
+that day from that year.
 
 You can run `python ../post.py` from a year folder to find the most recently
 updated day file, inject some code to post the answer instead of just printing
@@ -78,9 +77,9 @@ To run the code on a test input rather than the real input, you can run `python
 file named `input` in the current directory. This modifies the code, similar to
 post.py. Run `python ../input.py print` to take a look at the modified code.
 
-You can run `common.py` standalone to print the input for a given day or post a
-solution to a given day and part. Run `python common.py` to see the correct
-command line inputs.
+You can run `common/problem.py` standalone to print the input for a given day
+or post a solution to a given day and part. Run `python problem.py` to see the
+correct command line inputs.
 
 You can run the `make_year.py` script to set up a folder for a new year.
-Currently, this just makes the folder and creates the common.py symlink.
+Currently, this just makes the folder and creates the problem.py symlink.

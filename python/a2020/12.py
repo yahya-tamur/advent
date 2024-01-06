@@ -1,4 +1,4 @@
-from common import gpl
+from problem import gpl
 
 locs = {'E': 1, 'S': -1j, 'W': -1, 'N': 1j}
 dirs = {'L': 1j, 'R': -1j}

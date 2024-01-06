@@ -1,4 +1,4 @@
-from common import get_problem
+from problem import get_problem
 
 c = dict()
 for line in get_problem().split('\n'):

@@ -1,9 +1,8 @@
-from common import get_problem_lines
-from copy import deepcopy
+from problem import get_problem_lines
 
-map = [list(line) for line in get_problem_lines(file="input")]
-map_ = [list(line) for line in get_problem_lines(file="input")]
-tmp = [list(line) for line in get_problem_lines(file="input")]
+map = [list(line) for line in get_problem_lines()]
+map_ = [list(line) for line in get_problem_lines()]
+tmp = [list(line) for line in get_problem_lines()]
 
 def step(map, map_, tmp):
     for i in range(len(map)):
@@ -25,16 +24,8 @@ def step(map, map_, tmp):
                     map_[i][j] = 'v'
                     map_[i-1][j] = '.'
 
-def pm(map):
-    for line in map:
-        for c in line:
-            print(c, end='')
-        print()
-    print()
-
 i = 0
 while True:
-    print(i)
     i += 1
     step(map, map_,tmp)
     if map == map_:
