@@ -5,9 +5,7 @@ import sys
 
 load_dotenv()
 
-session = open(os.getenv('SESSION_FILE')).read()
-# remove new line
-session = session.strip()
+session = open(os.getenv('SESSION_FILE')).read().strip()
 
 inputs = os.getenv('INPUT_DIR')
 
