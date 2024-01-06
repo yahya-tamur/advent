@@ -1,5 +1,5 @@
-def run(code, input):
-    inputgen = iter(input) # works with generators or lists
+# generator -> generator
+def run(code, inp):
     def get(i):
         match (code[pc] // (10 ** (i+1))) % 10:
             case 0:
@@ -21,7 +21,7 @@ def run(code, input):
                 code[out(3)] = get(1) * get(2)
                 pc += 4
             case 3:
-                code[out(1)] = next(inputgen)
+                code[out(1)] = next(inp)
                 pc += 2
             case 4:
                 yield get(1)
@@ -40,3 +40,21 @@ def run(code, input):
                 break
             case x:
                 print("asd", x)
+
+#list -> list
+def execute(code, inp):
+    return list(run(code, iter(inp)))
+
+#() -> send, recv
+def interact(code):
+    from collections import deque
+    channel = deque()
+
+    def send(i):
+        channel.append(i)
+
+    def recv():
+        while True:
+            yield channel.popleft()
+
+    return send, run(code, recv())
