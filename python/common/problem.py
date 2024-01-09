@@ -15,7 +15,7 @@ def get_problem(year=0, day=0, file=""):
     if year==0:
         # no idea if this is safe lmao
         # but it worked on 'python 7.py' and 'python a2021/7.py'
-        fullpath = (os.getcwd() + '/' +  sys.argv[0]).split('/')
+        fullpath = (os.getcwd() + '/' + sys.argv[0]).split('/')
         year = int(fullpath[-2][1:])
         day = int(fullpath[-1][:-3])
 
