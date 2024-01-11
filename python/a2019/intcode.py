@@ -84,7 +84,7 @@ def interact(code):
     channel = deque()
 
     def recv():
-        while channel:
+        while True:
             yield channel.popleft()
 
     c = run(code, recv())
