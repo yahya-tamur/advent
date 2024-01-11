@@ -1,7 +1,7 @@
 from problem import gp
-from intcode import execute
+from intcode import execute, get_code
 
-code = [int(i) for i in gp().strip().split(',')]
+code = get_code()
 
 code_ = [code[0], 12, 2] + code[3:]
 execute(code_,[])

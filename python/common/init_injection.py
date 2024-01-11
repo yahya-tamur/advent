@@ -22,7 +22,7 @@ def init_injection(new_input=None):
 
     code = open(file).read()
 
-    for start in ["get_problem(", "get_problem_lines(", "gp(", "gpl("]:
+    for start in ["get_problem(", "get_problem_lines(", "gp(", "gpl(", "get_code("]:
         f = 0
         while (l := code.find(start,f)) != -1:
             l = l + len(start)

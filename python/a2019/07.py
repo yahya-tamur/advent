@@ -1,8 +1,8 @@
-from problem import gp
-from intcode import execute, interact
+from intcode import execute, interact, get_code
 from itertools import permutations
 
-code = [int(i) for i in gp().split(',')]
+code = get_code()
+
 def run_seq(phase):
     val = 0
     for p in phase:
@@ -11,22 +11,19 @@ def run_seq(phase):
 
 def run_seq2(phase):
     senders, receivers = list(), list()
+    channels = list()
     for i in phase:
-        send, recv = interact(code.copy())
-        send(i)
-        senders.append(send)
-        receivers.append(recv)
+        _, sendrecv = interact(code.copy())
+        _ = sendrecv(i)
+        channels.append(sendrecv)
 
-    senders[0](0)
-    ans = 0
+    signal = 0
     while True:
         for i in range(5):
-            if (n := next(receivers[i],None)) is not None:
-                senders[(i+1)%len(phase)](n)
-                ans = n
+            if (resp := channels[i](signal)) is not None:
+                signal = resp[0]
             else:
-                return ans
-
+                return signal
 
 
 print(f"part 1: {max((run_seq(phase) for phase in permutations(range(5))))}")
