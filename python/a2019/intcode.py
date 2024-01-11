@@ -39,7 +39,15 @@ def run(code, inp):
                 code[out(3)] = get(1) * get(2)
                 pc += 4
             case 3:
-                code[out(1)] = next(inp)
+                while True:
+                    try:
+                        n = next(inp)
+                    except StopIteration:
+                        # not sure about this. :(
+                        yield "wait"
+                    else:
+                        break
+                code[out(1)] = n
                 pc += 2
             case 4:
                 yield get(1)
