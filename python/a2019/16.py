@@ -1,24 +1,41 @@
 from problem import gp
 
-signal = [int(x) for x in gp().strip()]*10000
-base = [0, 1, 0, -1]
+# Took me a long time! getting this relatively fasy loop with the cumulative
+# sums took a while, then I finally got it to run in a reasonable time when I
+# realized we don't need to bother with the first n signals at all if we're
+# only going to look at signals n through n+8 at the end.
 
-#ith element of the nth pattern
-def pattern(n, i):
-    n = n+1
-    i = (i + 1)
-    return base[(i % (4*n)) // n]
+# Then I read on reddit that the part of the pattern we're looking at for part 2
+# is all 1's !!! !!! The solution I came up with is still as fast as solutions
+# using that property though, maybe up to a constant factor.
+def run(signal, off):
+    cumsum = [0 for _ in signal] + [0]
+    cumsum_ = [0 for _ in signal] + [0]
+    for i, x in enumerate(signal):
+        cumsum[i+1]= cumsum[i] + x
 
-signal_ = [0 for _ in signal]
-for i in range(100):
-    print(i)
-    for n in range(len(signal)):
-        ans = 0
+    for i in range(100):
         for m in range(len(signal)):
-            ans += pattern(n,m)*signal[m]
-        signal_[n] = int(str(ans)[-1])
-    signal = signal_
-print(f"part 1: {''.join((str(c) for c in signal[:8]))}")
+            sgn = 1
+            ans = 0
+            i = m
+            while i < len(signal):
+                if i+(m+off)+1 >= len(signal):
+                    ans += (cumsum[-1] - cumsum[i])*sgn
+                    break
+                ans += (cumsum[i+(m+off)+1] - cumsum[i])*sgn
+                sgn *= -1
+                i += 2*(m+off)+2
+            cumsum_[m+1] = int(str(ans)[-1]) + cumsum_[m]
+        cumsum, cumsum_ = cumsum_, cumsum
+    return ''.join((str(i-j) for i,j, _ in zip(cumsum[1:], cumsum[:-1], range(8))))
 
 
+inp = gp().strip()
+num = int(inp[:7])
+inp = [int(x) for x in inp]
+print(f"part 1: {run(inp, 0)}")
 
+signal = (inp* 10000)[num:]
+
+print(f"part 2: {run(signal, num)}")
