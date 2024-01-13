@@ -89,6 +89,8 @@ def interact(code):
 
     c = run(code, recv())
     out = next(c)
+    # should this support sending multiple inputs at a time and getting
+    # all the outputs combined back?
     def sendrecv(i):
         channel.append(i)
         return next(c, None)

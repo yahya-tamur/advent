@@ -1,7 +1,7 @@
-from intcode import get_code, interact, execute
+from intcode import get_code, execute
 from collections import defaultdict
 
-init, sv = interact(get_code())
+init = execute(get_code(), [])
 
 grid = [list(l) for l in ''.join((chr(c) for c in init)).split('\n')]
 
