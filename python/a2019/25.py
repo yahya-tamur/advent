@@ -4,9 +4,7 @@ import readline
 from sys import exit, argv
 import os
 
-# I did have a lot of fun customizing the user interaction. I do like UI/UX design.
-
-
+#play by running 'python 25.py play'
 def play():
     intro = """
     This stage asks you to win a short text-based adventure game written
@@ -28,7 +26,7 @@ def play():
     I only tested this on a linux terminal -- one thing to change when using
     another terminal will be to use a different way of clearing the screen.
 
-    Run 'python 25.py showans' to find the correct answer automatically.
+    Run 'python 25.py showans' to show the correct answer found automatically.
 
     Press enter to get started.
     """
@@ -36,10 +34,6 @@ def play():
     os.system('clear')
     print(intro)
     input()
-
-
-
-
 
     resp, sv = interact(get_code())
     resp = ''.join((chr(c) for c in resp))
@@ -307,7 +301,8 @@ def win():
             l = mess.find('typing ')+7
             r = mess.find(' on')
             print(f"part 1: {mess[l:r]}")
-            print(f"part 2: {'@'}")
+            #I think anything works but this is what the website sends.
+            print(f"part 2: {0}")
             exit()
 
         for j in range(lll):
