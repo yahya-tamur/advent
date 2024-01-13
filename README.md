@@ -2,7 +2,7 @@ Contents, Organization
 ---------
 This repository contains solutions to problems on adventofcode.com.
 
-Right now, it contains all of the solutions for 2020, 2021, 2022, and 2023.
+Right now, it contains all of the solutions for 2019, 2020, 2021, 2022, and 2023.
 
 Each user on the website gets a different input for each problem, and a
 'solution' consists of finding an solution for that input and submitting to the
