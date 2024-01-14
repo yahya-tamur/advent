@@ -1,6 +1,8 @@
 from intcode import get_code, execute
 from collections import defaultdict
 
+# Interesting problem!!
+
 init = execute(get_code(), [])
 
 grid = [list(l) for l in ''.join((chr(c) for c in init)).split('\n')]
@@ -62,9 +64,14 @@ def constrict(instrs, newletter):
 
     return (instrs, phrase)
 
-# I wouldn't be surprised if this doesn't get the right answer with a
-# different input. I don't really make sure the final instrs doesn't contain
-# anything but function calls.
+# I wouldn't be surprised if this doesn't get the right answer with a different
+# input. It's a greedy algorithm -- choosing A, then B, then C. Since there are
+# even longer substrings that save more characters, but we don't allow long
+# movement functions, it's probably essentially randomly picking A and B.
+
+# It also doesn't really make sure the final instrs doesn't contain anything
+# but function calls.
+
 instrs, a = constrict(instrs, 'A')
 instrs, b = constrict(instrs, 'B')
 instrs, c = constrict(instrs, 'C')

@@ -4,7 +4,10 @@ import readline
 from sys import exit, argv
 import os
 
-#play by running 'python 25.py play'
+# 🌟🌟🌟 
+# Play by running 'python 25.py play'
+# This might be by far the longest, most complicated program (at least in python)
+# I've written for advent of code.
 def play():
     intro = """
     This stage asks you to win a short text-based adventure game written
@@ -19,12 +22,12 @@ def play():
     two rooms, one room definitely has a ladder there. The other room
     might have a wall, a door, or a ladder there.
 
-    Another quality of life improvement is that many error messages will
-    not overwrite what's written on the screen so you can usually still
-    see the possible directions you can move to.
+    Another quality of life improvement is that many error messages won't
+    clear the screen, so you can usually still see the possible directions
+    you can move to.
 
     I only tested this on a linux terminal -- one thing to change when using
-    another terminal will be to use a different way of clearing the screen.
+    another terminal is the way the screen is cleared.
 
     Run 'python 25.py showans' to show the correct answer found automatically.
 
@@ -112,8 +115,6 @@ def play():
                         ans[ii][jj] = '?'
                     elif doors[height][(z-1j,z)] == 3:
                         ans[ii][jj] = ' '
-                    else:
-                        ans[ii][jj] = 'E'
 
                 if (height, z-1j, z) in ladders:
                     ans[ii][jj] = '='
@@ -126,9 +127,6 @@ def play():
                     elif doors[height][(z-1,z)] == 3:
                         ans[ii][jj] = ' '
                         ans[ii][jj+1] = ' '
-                    else:
-                        ans[ii][jj] = 'E'
-                        ans[ii][jj+1] = 'E'
                 if (height, z-1, z) in ladders:
                     ans[ii][jj] = 'H'
                     ans[ii][jj+1] = 'H'

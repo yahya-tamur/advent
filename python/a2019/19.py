@@ -1,6 +1,8 @@
 from intcode import get_code, interact, execute
 from collections import defaultdict
 
+# Pretty efficient!
+
 code = get_code()
 
 p1 = 0
@@ -22,7 +24,7 @@ for n in range(5000):
     start = True
     for i in range(l,r):
         j = n - i
-        z = i + (n-i)*1j
+        z = i + j*1j
 
         # if surrounded by zeroes, skip. ones, don't bother running the intcode.
         if n > 50 and bsa[z-1] == 0 and bsa[z-1j] == 0:

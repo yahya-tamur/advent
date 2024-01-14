@@ -1,3 +1,20 @@
+# I think both the code is very clean both in this library and in the way other
+# programs use it.
+
+# When I heard of intcode, I thought we would have to reason about
+# assembly-like code. However, it just provided a black box for other programs
+# to interact with.
+
+# I'm a little disappointed there were no problems like 'this code will give
+# you the correct answer, but it will take too long. You have to partially
+# decompile it and change some parts to make it run in time.'
+
+# I saw on the reddit that people are decompiling the intcode, and I kind of
+# want to try that too! I suspect a general approach won't really possible and
+# a lot of the solutions will look like 2021 day 24 (look into code[126],
+# multiply that with code[792], etc.) though.
+
+
 # put it in common/problem?
 def get_code(*args, **kwargs):
     from problem import gp
@@ -31,7 +48,6 @@ def run(code, inp):
                 code[code[pc+i]+rb] = val
             case n:
                 print(f'mode {n}')
-    input_index = 0
     pc = 0
     rb = 0
     output = list()

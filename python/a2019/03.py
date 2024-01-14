@@ -1,7 +1,5 @@
 from problem import gpl
 
-# when do two complex range intersect??
-
 wires = list()
 
 dirs = {'U': 1j, 'D': -1j, 'L': -1, 'R': 1}

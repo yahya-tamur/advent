@@ -31,6 +31,7 @@ def p1():
 
 print(f"part 1: {p1()}")
 
+# I think this code is very simple and clean, especially for what the problem is.
 def p2():
     sides = list()
     for r in range(25):

@@ -1,5 +1,7 @@
-# fun problem. heuristics. took me some time.
+# fun problem. heuristics.
 # part 2 takes about 40 seconds on my laptop.
+
+# This took me more time than any other problem this year except maybe 25.
 
 from problem import gpl
 from math import inf
