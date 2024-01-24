@@ -1,33 +1,46 @@
+# 🌟🌟🌟 
+# why have all my solutions been so awful this year?
+
 from problem import gp
-
-inp = gp().strip()[1:-1]
-print(inp)
-
-stack = [[0]]
-
-p2 = 0
-current_length = 0
-
-for c in inp:
-    if c in 'NWSE':
-        stack[-1][-1] += 1
-        current_length += 1
-        if current_length >= 1000:
-            p2 += 1
-    if c == '(':
-        stack.append([0])
-    if c == '|':
-        current_length -= stack[-1][-1]
-        stack[-1].append(0)
-    if c == ')':
-        current_length -= stack[-1][-1]
-        l = stack.pop()
-        if 0 in l:
-            continue
-        current_length += max(l)
-        stack[-1][-1] += max(l)
-    print(stack, current_length)
+from collections import defaultdict, deque
 
 
-print(f"part 1: {stack[-1][-1]}")
+doors = defaultdict(set) # set for 4 bit info???!!??
+dir = {'N': 1, 'S': -1, 'W': 1j, 'E': -1j}
+
+# unintuitive :(
+# data structures = algorithms
+activestack = [[[0]],[[0]]]
+
+for c in gp().strip()[1:-1]:
+    if (d := dir.get(c)) is not None:
+        for a in activestack[-1][-1]:
+            doors[a].add(d)
+        activestack[-1][-1] = {a + d for a in activestack[-1][-1]}
+    elif c == '(':
+        activestack.append([activestack[-1][-1].copy()])
+    elif c == '|':
+        activestack[-1].append(activestack[-2][-1].copy())
+    elif c == ')':
+        a = set()
+        for aa in activestack[-1]:
+            a |= aa
+        activestack.pop()
+        activestack[-1][-1] = a
+
+active = deque([(0,0)])
+seen = set()
+
+p1, p2 = 0, 0
+while active:
+    a, s = active.popleft()
+    if a in seen:
+        continue
+    seen.add(a)
+    p1 = s
+    p2 += s >= 1000
+    for d in doors[a]:
+        active.append((a+d, s+1))
+
+print(f"part 1: {p1}")
 print(f"part 2: {p2}")
