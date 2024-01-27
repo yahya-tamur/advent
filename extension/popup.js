@@ -6,13 +6,13 @@ document.getElementById("submit").onclick = async () => {
 import os, sys
 for _ in range(10):
     if 'session.txt' in os.listdir():
-        open('session.txt', 'w').write('#session#')
+        open('session.txt', 'w').write('${session}')
         sys.exit()
     os.chdir('..')
 print('Couldn\\\'t find a session.txt file. Did you run setup-downloads.py?')
 "
 
-`.replace("#session#", session)
+`
     await navigator.clipboard
         .writeText(command)
         .then(() => alert("copied!"))

@@ -1,14 +1,14 @@
 import os
 
 print()
-print("Both python and rust projects have modules called 'common'")
+print("Both python and rust projects have modules called 'problem'")
 print('that get the problem inputs.')
 print()
 print('They try to get the it from a local file, and download')
 print("it from the website if that doesn't exist.")
 print()
-print("This script sets up the environment variables and makes")
-print("the 'session' file and the 'inputs' directory.")
+print("This script makes the 'session' file and the 'inputs' directory,")
+print("then sets up the environment variables in a .env file.")
 print()
 
 

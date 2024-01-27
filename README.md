@@ -2,44 +2,36 @@ Contents, Organization
 ---------
 This repository contains solutions to problems on adventofcode.com.
 
-Right now, it contains all of the solutions for 2019, 2020, 2021, 2022, and 2023.
+Right now, it contains all of the solutions for 2018, 2019, 2020, 2021, 2022,
+and 2023.
 
 Each user on the website gets a different input for each problem, and a
 'solution' consists of finding an solution for that input and submitting to the
 website.
 
-This repository contains some code to help organize the inputs:
+This repository contains some code to help organize the inputs. To set up:
 
-Both python and rust folders contain code for downloading the inputs from the
-website to access them locally from the code. You can run `python
-setup-downloads.py` to set this up. It will create an 'inputs' folder for the
-inputs to get downloaded into and a 'session.txt' file to put the user session
-cookie from the website into.
+1) Run `python setup-downloads.py` to create a folder that the inputs will get
+put into, and a file that will contain the browser session cookie to get the
+inputs from the website if they're not downloaded.
 
-The `extension` folder contains an unpacked chrome extension. With this
-installed, you can click a button to copy a command that populates the nearest
-session.txt file with the session cookie of the website.
+2) Download the chrome extension in the `extension` folder, make sure you're
+logged in to `adventofcode.com`, and click the button to copy a command to
+populate the `session.txt` file. Paste the command in a terminal in this
+directory.
 
-You can then go to `python/common` and run the `problem.py` script to make
-sure it works correctly.
+3) Try running some of the solutions to make sure they work.
 
-The `rust` and `python` folders contain solutions in rust and python
-respectively.
-
-The `common` module from both folders have a function called `get_problem`.
-This will download the input to the problem to `/inputs/a<year>/<day>.txt` if
-it's not already there, and return the contents of that file.
+To access the inputs from the code, both `rust` and `python` folders contain
+modules with functions called `get-problem` or `get-problem-lines`. This will
+try to access the input from the folder, and download it if it's not there.
 
 All the solutions, in both rust and python, should print something like
+
 ```
 part 1: <solution to part 1>
 part 2: <solution to part 2>
 ```
-
-The python folder also contains a `post.py` script which will find the problem
-file with the most recent changes, change the code to post the solution to the
-latest part to the website instead of just printing it, and run the changed
-code.
 
 I did 2022 first, then 2021 and 2023 together, then 2020. I switched to python
 a little bit after I started 2021, though I did some problems in rust if I
@@ -64,6 +56,11 @@ Notes for the python folder:
 The way I included `problem` in the code is by having symlinks in the folder for
 each year.
 
+Note that in order for symlinks to be correctly set up in Windows, you need to
+be in 'developer mode', run some git commands, then clone the repository. I
+don't use Windows, but everything else in this repository should work without
+problems.
+
 You can cd into `a<year>` and run ```python <day>.py``` to print the answers to
 that day from that year.
 
@@ -83,3 +80,9 @@ correct command line inputs.
 
 You can run the `make_year.py` script to set up a folder for a new year.
 Currently, this just makes the folder and creates the problem.py symlink.
+
+In more recent years (in the order I did them, not chronologically), I've
+commented '🌟🌟🌟' on solutions I thought were especially interesting. Run
+```grep -r '🌟🌟🌟' .``` or equivalent from the python folder to see those
+solutions.
+

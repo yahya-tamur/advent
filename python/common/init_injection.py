@@ -1,7 +1,7 @@
 import os
 import sys
 
-# A new input is always necessary since get_problem will not wor with no
+# A new input is always necessary since get_problem will not work with no
 # inputs.
 def init_injection(new_input=None):
     numfile = lambda file: file.name[-3:] == ".py" and file.name[:-3].isdigit()
