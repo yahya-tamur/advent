@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "advent-of-code",
+  "name": "get advent of code session",
   "description": "Gets current session and copies command to write that in the nearest session.txt file.",
   "version": "1.0",
   "action": {
