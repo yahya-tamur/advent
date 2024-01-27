@@ -1,7 +1,3 @@
-# 🌟🌟🌟 
-# Fun problem! I did the bs with the exec thinking it would make the program
-# faster, but it didn't make it fast enough to avoid having to understand
-# the input program.
 
 from problem import gpl
 
@@ -55,6 +51,7 @@ for part in range(2):
     if part == 1:
         r[0] = 1
 
+    # 🌟🌟🌟 
     # run the program enough to get the correct input register
     for _ in range(100):
 
