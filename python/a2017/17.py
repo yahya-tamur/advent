@@ -7,8 +7,6 @@ r = [0]
 
 now = 0
 for i in range(1,2017+1):
-    if i % 1_000_000 == 0:
-        print(i)
     for _ in range(step):
         now = r[now]
     l.append(now)
