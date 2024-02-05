@@ -15,13 +15,9 @@ def f(i):
     ans = list()
     for j in range(i*2_000_000, (i+1)*2_000_000):
         if (md := md5_(inp + str(j)))[:5] == '00000':
-            print(j, md)
             ans.append((j, md[5:7]))
     return ans
 
-
-
-print(md5_('abc3231929'))
 with Pool(20) as p:
     ans = []
     for a in p.map(f, range(20)):
@@ -33,11 +29,8 @@ with Pool(20) as p:
     print(f"part 1: {''.join([a[0] for a in ans[:8]])}")
     key = ['x']*8
     left = {str(i) for i in range(8)}
-    print(ans)
-    print(left)
 
     for a in ans:
-        print(a[0], a[0] in left)
         if a[0] in left:
             key[int(a[0])] = a[1]
             left.remove(a[0])
