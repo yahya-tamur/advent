@@ -31,9 +31,6 @@ def md5(s_inp):
         len_bytes += 1
     inp += (len_str*8 & 0xFFFF_FFFF_FFFF_FFFF) << 8*(len_bytes)
     len_bytes = len_bytes + 8
-    print(hex(inp))
-    for i in range(70):
-    	print(i, hex( (inp >> 8*i) & 0xFF))
     for i in range(0, len_bytes*8, 512):
         M = [(inp >> (i + j*32)) & 0xFFFF_FFFF for j in range(16)]
         A, B, C, D = a0, b0, c0, d0
@@ -68,4 +65,4 @@ def md5(s_inp):
             ans.append(aaa[i:i+2])
 
     return ''.join(ans)
-md5('abc')
+print(md5('abc'*100))
