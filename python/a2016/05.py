@@ -1,12 +1,8 @@
 from problem import gpl
-#from md5 import md5
-from hashlib import md5
+from md5 import fast_md5
 from multiprocessing import Pool
 
 inp = gpl()[0]
-
-def md5_(s):
-    return md5(s.encode('ascii')).hexdigest()
 
 #inp = 'abc'
 
@@ -14,7 +10,7 @@ def md5_(s):
 def f(i):
     ans = list()
     for j in range(i*2_000_000, (i+1)*2_000_000):
-        if (md := md5_(inp + str(j)))[:5] == '00000':
+        if (md := fast_md5(inp + str(j)))[:5] == '00000':
             ans.append((j, md[5:7]))
     return ans
 

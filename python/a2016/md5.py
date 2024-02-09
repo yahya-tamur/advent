@@ -14,7 +14,7 @@ s = [ 7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22, \
 K = [floor((1 << 32) * abs(sin(i+1))) for i in range(64)]
 
 
-def md5(s_inp):
+def my_md5(s_inp):
     len_str = len(s_inp)
 
     a0 = 0x67452301
@@ -65,4 +65,11 @@ def md5(s_inp):
             ans.append(aaa[i:i+2])
 
     return ''.join(ans)
-print(md5('abc'*100))
+
+
+from hashlib import md5
+
+def fast_md5(s):
+    return md5(s.encode('ascii')).hexdigest()
+
+
