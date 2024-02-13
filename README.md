@@ -2,8 +2,8 @@ Contents, Organization
 ---------
 This repository contains solutions to problems on adventofcode.com.
 
-Right now, it contains all of the solutions for 2018, 2019, 2020, 2021, 2022,
-and 2023.
+Right now, it contains all of the solutions for 2016, 2017, 2018, 2019, 2020,
+2021, 2022, and 2023.
 
 Each user on the website gets a different input for each problem, and a
 'solution' consists of finding an solution for that input and submitting to the
@@ -33,9 +33,9 @@ part 1: <solution to part 1>
 part 2: <solution to part 2>
 ```
 
-I did 2022 first, then 2021 and 2023 together, then 2020. I switched to python
-a little bit after I started 2021, though I did some problems in rust if I
-thought they were interesting to try to optimize.
+I did 2022 first, then 2021 and 2023 together, then backwards from 2020. I
+switched to python a little bit after I started 2021, though there are a few
+problems in rust here and there.
 
 Notes for the rust folder:
 -----
