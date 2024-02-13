@@ -1,57 +1,15 @@
 from problem import gpl
 
-instrs = list()
+# I did implement an interpreter (it's in a previous commit)
+# but I needed to understand the code for part 2 anyway.
 
-rs = dict()
+# Nobody on reddit outright posted their own input so I didn't check
+# but I'm pretty sure this will work on any input.
 
-for line in gpl():
-    instr, *r = line.split(' ')
-    instrs.append([instr, *r])
+solve = lambda n: \
+        (lambda f, n: 1 if n == 1 else n*f(f, n-1))( \
+        (lambda f, n: 1 if n == 1 else n*f(f, n-1)), n) + \
+        int(gpl()[19].split(' ')[1])*int(gpl()[20].split(' ')[1])
 
-    for r_ in r:
-        if r_.isalpha():
-            rs[r_] = 0
-        else:
-            rs[r_] = int(r_)
-
-pc = 0
-rs['a'] = 12
-
-print(rs)
-
-while pc < len(instrs):
-
-    instr, *r = instrs[pc]
-    match instr:
-        case 'cpy':
-            if r[1].isalpha():
-                rs[r[1]] = rs[r[0]]
-        case 'inc':
-            rs[r[0]] += 1
-        case 'dec':
-            rs[r[0]] -= 1
-        case 'jnz':
-            if rs[r[0]] != 0:
-                pc += rs[r[1]]
-                continue
-        case 'tgl':
-            print('tgl')
-            if (i := pc + rs[r[0]]) in range(len(instrs)):
-                print("tgl", instrs[i][0])
-                match instrs[i][0]:
-                    case 'inc':
-                        instrs[i][0] = 'dec'
-                    case 'dec':
-                        instrs[i][0] = 'inc'
-                    case 'jnz':
-                        instrs[i][0] = 'cpy'
-                    case 'cpy':
-                        instrs[i][0] = 'jnz'
-                    case 'tgl':
-                        instrs[i][0] = 'inc'
-    pc += 1
-
-print(f"part 1: {rs['a']}")
-
-
-
+print(f"part 1: {solve(7)}")
+print(f"part 2: {solve(12)}")
