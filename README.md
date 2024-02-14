@@ -66,7 +66,7 @@ that day from that year.
 
 You can run `python ../post.py` from a year folder to find the most recently
 updated day file, inject some code to post the answer instead of just printing
-it, and run the injected code. Run `python post.py print` to print the injected
+it, and run the injected code. Run `python ../post.py print` to print the injected
 code instead of running it.
 
 To run the code on a test input rather than the real input, you can run `python
