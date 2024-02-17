@@ -2,8 +2,7 @@ Contents, Organization
 ---------
 This repository contains solutions to problems on adventofcode.com.
 
-Right now, it contains all of the solutions for 2016, 2017, 2018, 2019, 2020,
-2021, 2022, and 2023.
+It contains all of the solutions up to 2023!
 
 Each user on the website gets a different input for each problem, and a
 'solution' consists of finding an solution for that input and submitting to the
@@ -23,7 +22,7 @@ directory.
 3) Try running some of the solutions to make sure they work.
 
 To access the inputs from the code, both `rust` and `python` folders contain
-modules with functions called `get-problem` or `get-problem-lines`. This will
+modules with functions called `get-problem` and `get_problem_lines`. This will
 try to access the input from the folder, and download it if it's not there.
 
 All the solutions, in both rust and python, should print something like

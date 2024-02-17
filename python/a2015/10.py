@@ -5,7 +5,7 @@ l = [int(x) for x in gp().strip()]
 def process(l):
     l_ = []
     repeat, c = 1, l[0]
-    
+
     for c_ in l[1:]:
         if c == c_:
             repeat += 1

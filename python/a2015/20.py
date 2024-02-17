@@ -26,7 +26,7 @@ def solve(n):
     pfac = defaultdict(int)
 
     extend_primes(ceil(sqrt(n))+1)
-    
+
     i = 0
     while n != 1:
         if primes[i] > ceil(sqrt(n)):
