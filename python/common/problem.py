@@ -44,7 +44,7 @@ def get_problem_lines(year=0, day=0, file=""):
             if s]
 
 def post_problem(year, day, level, ans):
-    print(f"Sending {ans}")
+    print(f"Sending {ans}\n")
     resp = requests.post(f'https://adventofcode.com/{year}/day/{day}/answer', \
             {'level' : str(level), 'answer': str(ans) },
             cookies={'session':session})
