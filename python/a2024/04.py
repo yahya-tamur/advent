@@ -1,4 +1,4 @@
-from problem import get_problem, get_problem_lines
+from problem import get_problem_lines
 from collections import defaultdict
 
 m = defaultdict(lambda:'.')
@@ -15,11 +15,11 @@ for d in (1, -1, 1j, -1j, 1+1j, 1-1j, -1-1j, -1+1j):
 
 print(f"part 1: {ans}")
 
+
 ans = 0
 for s in k:
     ans +=  m[s] == 'A' and \
             ((m[s-1-1j] == 'M' and m[s+1+1j] == 'S') or (m[s-1-1j] == 'S' and m[s+1+1j] == 'M')) and \
             ((m[s-1+1j] == 'M' and m[s+1-1j] == 'S') or (m[s-1+1j] == 'S' and m[s+1-1j] == 'M'))
-
 
 print(f"part 2: {ans}")
