@@ -11,10 +11,15 @@ for i in range(2,0,-1):
         continue
     print(f"Posting part {i}\n")
     s = 0
+    #look into why this is a while and not an if
     while (l := code.find(start, s)) != -1:
-        l = l
+        ii, indent = l-1, 0
+        while code[ii] == ' ':
+            indent += 1
+            ii -= 1
+        
         r = code.rfind('}")', 0, code.find("\n", l))
-        code = code[:l] + f"print('part {i}: ',end='')\nprint(post_problem({year}, {day}, {i}, " + \
+        code = code[:l] + f"print('part {i}: ',end='')\n{' '*indent}print(post_problem({year}, {day}, {i}, " + \
                 code[l+len(start):r] + "))" + code[r+3:]
         s = l+1
 
