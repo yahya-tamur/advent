@@ -21,7 +21,7 @@ def solve(part):
             for z_ in antens:
                 if z == z_:
                     continue
-                k = z + 2*(z_-z)
+                k = 2*z_ - z
                 while k in allowed:
                     ats.add(k)
                     k += z_ - z
