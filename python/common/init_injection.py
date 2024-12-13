@@ -1,9 +1,7 @@
 import os
 import sys
 
-# A new input is always necessary since get_problem will not work with no
-# inputs.
-def init_injection(new_input=None):
+def get_year_day():
     numfile = lambda file: file.name[-3:] == ".py" and file.name[:-3].isdigit()
     mtime = lambda file: file.stat().st_mtime
 
@@ -11,6 +9,14 @@ def init_injection(new_input=None):
 
     year = os.getcwd()[-4:]
     day = int(float(file.name[:-3])) # leading zeroes :)
+
+    return year, day
+
+# A new input is always necessary since get_problem will not work with no
+# inputs.
+def init_injection(new_input=None):
+
+    year, day = get_year_day()
 
     if new_input is None:
         new_input=f"year={year},day={day}"
