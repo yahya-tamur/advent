@@ -10,13 +10,13 @@ def get_year_day():
     year = os.getcwd()[-4:]
     day = int(float(file.name[:-3])) # leading zeroes :)
 
-    return year, day
+    return year, day, file
 
 # A new input is always necessary since get_problem will not work with no
 # inputs.
 def init_injection(new_input=None):
 
-    year, day = get_year_day()
+    year, day, file = get_year_day()
 
     if new_input is None:
         new_input=f"year={year},day={day}"
