@@ -1,19 +1,18 @@
 from problem import get_problem, get_problem_lines, look
-from collections import defaultdict, deque
 
-m = defaultdict(lambda:'!')
+pl = get_problem_lines()
+m = dict()
 
-start, end = 0, 0
-for i, line in enumerate(get_problem_lines()):
-    for j, c in enumerate(line):
-        z = i+1j*j
+start = 0
+for i in range(len(pl)):
+    for j in range(len(pl[0])):
+        z, c = i+1j*j, pl[i][j]
         if c == '#':
             m[z] = '#'
             continue
         m[z] = '.'
-        match c:
-            case 'S': start = z
-            case 'E': end = z
+        if c == 'S':
+            start = z
 
 path = [start, next(start+d for d in (1,-1,1j,-1j) if m[start+d] == '.')]
 ended = False
