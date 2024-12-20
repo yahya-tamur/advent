@@ -10,7 +10,7 @@ if day > 25:
 
 f = open(f'./{day}.py', 'w')
 
-f.write("""from problem import get_problem, get_problem_lines
+f.write("""from problem import get_problem, get_problem_lines, look
 
 inp = get_problem()
 

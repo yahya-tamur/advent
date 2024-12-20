@@ -3,6 +3,17 @@ import requests
 import os
 import sys
 
+# put this somewhere else?
+from time import perf_counter
+start = perf_counter()
+lpt = 2
+
+def look(*args):
+    global lpt
+    if (pc := perf_counter()) - start > lpt:
+        print('% 7.3f' % (pc - start), *args)
+        lpt += 2
+
 load_dotenv()
 
 session = open(os.getenv('SESSION_FILE')).read().strip()
