@@ -15,46 +15,32 @@ for i, line in enumerate(get_problem_lines()):
             case 'S': start = z
             case 'E': end = z
 
-times = [0 for _ in range(len(m))]
+start_ = next(start+d for d in (1, -1, 1j, -1j) if m[start+d] == '.')
+path = [start, start_]
 
+ended = False
 
-seen = dict()
-stack = deque([(0, start)])
-while stack:
-    steps, z = stack.popleft()
-    if z in seen:
-        continue
-    seen[z] = steps
-    if z == end:
-        break
-    for z_ in (z+1, z-1, z+1j, z-1j):
-        if m[z_] != '.':
-            continue
-        stack.append((steps + 1, z_))
+while not ended:
+    ended = True
+    for d in (1, -1, 1j, -1j):
+        nxt = path[-1] + d
+        if nxt != path[-2] and m[nxt] == '.':
+            path.append(nxt)
+            ended = False
+            break
 
-cheats = [0 for i in range(len(m))]
-mk = list(m.keys())
-for z in mk:
-    for d in (1, 1j):
-        if m[z] == '.' and m[z+d] == '#' and m[z+2*d] == '.' and \
-                z in seen and (z+2*d) in seen:
-            cheats[abs(seen[z] - seen[z+2*d]) - 2] += 1
+def man(z, z_):
+    return int(abs(z.real - z_.real) + abs(z.imag - z_.imag))
 
-print(f"part 1: {sum(cheats[100:])}")
+cheats1 = [0 for _ in range(len(m))]
+cheats2 = [0 for _ in range(len(m))]
 
-d20 = set()
-for d in (1, -1, 1j, -1j):
-    for k in range(21):
-        for l in range(k+1):
-            d20.add((k-l)*d + l*d*1j)
+for i in range(len(path)):
+    for j in range(i+2, len(path)):
+        if (m := man(path[i], path[j])) <= 2:
+            cheats1[j - i - m] += 1
+        if (m := man(path[i], path[j])) <= 20:
+            cheats2[j - i - m] += 1
 
-cheats = [0 for i in range(len(m))]
-for z in mk:
-    for z_ in (z + d for d in d20):
-        if m[z] == '.' and m[z_] == '.' and z in seen and z_ in seen \
-                and seen[z_] > seen[z]:
-            cheats[seen[z_] - seen[z] - \
-                    (int(abs(z_.real - z.real) + abs(z_.imag - z.imag)))] += 1
-
-
-print(f"part 2: {sum(cheats[100:])}")
+print(f"part 1: {sum(cheats1[100:])}")
+print(f"part 2: {sum(cheats2[100:])}")
