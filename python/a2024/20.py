@@ -17,25 +17,20 @@ for i, line in enumerate(get_problem_lines()):
 
 times = [0 for _ in range(len(m))]
 
-best_noskip = len(m)
-import heapq as h
 
 seen = dict()
-stack = [(0, str(start))]
+stack = deque([(0, start)])
 while stack:
-    steps, z = h.heappop(stack)
-    z = complex(z)
-    if z == end:
-        seen[z] = steps
-        best_noskip = steps
-        break
-    if seen.get(z, len(m)) <= steps:
+    steps, z = stack.popleft()
+    if z in seen:
         continue
     seen[z] = steps
+    if z == end:
+        break
     for z_ in (z+1, z-1, z+1j, z-1j):
         if m[z_] != '.':
             continue
-        stack.append((steps + 1, str(z_)))
+        stack.append((steps + 1, z_))
 
 cheats = [0 for i in range(len(m))]
 mk = list(m.keys())
@@ -58,8 +53,8 @@ for z in mk:
     for z_ in (z + d for d in d20):
         if m[z] == '.' and m[z_] == '.' and z in seen and z_ in seen \
                 and seen[z_] > seen[z]:
-            ln = int(abs(z_.real - z.real) + abs(z_.imag - z.imag))
-            cheats[seen[z_] - seen[z] - ln] += 1
+            cheats[seen[z_] - seen[z] - \
+                    (int(abs(z_.real - z.real) + abs(z_.imag - z.imag)))] += 1
 
-#print(f"input: {sum(cheats[50:])}")
+
 print(f"part 2: {sum(cheats[100:])}")
