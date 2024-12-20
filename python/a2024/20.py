@@ -1,6 +1,5 @@
 from problem import get_problem, get_problem_lines, look
 from collections import defaultdict, deque
-from time import time
 
 m = defaultdict(lambda:'!')
 
@@ -28,15 +27,15 @@ while not ended:
             ended = False
             break
 
-
 def man(z, z_):
     return int(abs(z.real - z_.real) + abs(z.imag - z_.imag))
 
 ans1, ans2 = 0, 0
 
 for i in range(len(path)):
-    for j in range(i+2, len(path)):
-        if j - i - (l := man(path[i], path[j])) < 100:
+    z = path[i]
+    for j in range(i+100, len(path)):
+        if j - i - (l := man(z, path[j])) < 100:
             continue
         ans1 += l <= 2
         ans2 += l <= 20
