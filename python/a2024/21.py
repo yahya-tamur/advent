@@ -32,7 +32,7 @@ def shortest(start, end, pad):
     return [''.join({1: 'v', -1: '^', 1j: '>', -1j: '<'}[d] for d in path) \
             for path in paths]
 
-# get all shortest sequences of inputs to the seq
+# get all shortest sequences of inputs to type the sequence
 def unpad(seq, pad):
     seq = 'A' + seq
     paths = ['']
