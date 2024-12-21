@@ -67,7 +67,6 @@ def shortest_unpad(seqs, pad):
 
     return ans
 
-
 bests = dict()
 
 for d1 in '^<>vA':
@@ -79,7 +78,7 @@ for d1 in '^<>vA':
 
 from collections import Counter
 
-def best_keys(s):
+def best_shortest(s):
     d, first = s
     d_ = Counter()
     start = bests[('A', first)] + 'A'
@@ -102,7 +101,7 @@ def into_counter(s):
 def solve(line, n):
     r = [into_counter(cs) for cs in unpad(line, numpad)]
     for _ in range(n):
-        r = [best_keys(x) for x in r]
+        r = [best_shortest(x) for x in r]
 
     return min(sum(x[0].values()) + 1 for x in r)
 
