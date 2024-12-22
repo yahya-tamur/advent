@@ -4,7 +4,7 @@ from time import time
 #aaa = time()
 
 def step(n):
-    n = (((n*64) ^ n) % 16777216)
+    n = ((n * 64) ^ n) % 16777216
     n = ((n // 32) ^ n) % 16777216
     n = ((n * 2048) ^ n) % 16777216
     return n
@@ -30,7 +30,7 @@ for line in get_problem_lines():
             seen_now.add(window)
 
         n_ = step(n)
-        window = (window*20 +((n_ % 10) - (n % 10) + 10)) % (20 ** 4)
+        window = (window*20 + ((n_ % 10) - (n % 10) + 10)) % (20 ** 4)
         n = n_
 
 #print(time() - aaa)
