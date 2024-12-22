@@ -21,7 +21,9 @@ for line in get_problem_lines():
         n = n_
 
     seen_now = set()
-    for i in range(1996):
+    for i in range(1997):
+        if i == 1996:
+            ans1 += n
 
         if window not in seen_now:
             d[window] += n % 10
@@ -30,9 +32,7 @@ for line in get_problem_lines():
         n_ = step(n)
         window = (window*20 +((n_ % 10) - (n % 10) + 10)) % (20 ** 4)
         n = n_
-    ans1 += n
 
 #print(time() - aaa)
 print(f"part 1: {ans1}")
 print(f"part 2: {max(d.values())}")
-
