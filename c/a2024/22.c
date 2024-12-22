@@ -16,8 +16,8 @@ int main() {
 
     FILE* inp = fopen("../../inputs/a2024/22.txt", "r");
 
-    int d[160000] = {0};
-    int seen_now[160000];
+    int d[130321] = {0};
+    int seen_now[130321];
 
     char buf[20];
 
@@ -26,7 +26,7 @@ int main() {
         int window = 0;
         for (int i=0; i<4; ++i) {
             int n_ = step(n);
-            window = window*20 + (n_ % 10) - (n % 10) + 10;
+            window = window*19 + (n_ % 10) - (n % 10) + 9;
             n = n_;
         }
 
@@ -42,13 +42,13 @@ int main() {
             }
 
             int n_ = step(n);
-            window = (window*20 + (n_ % 10) - (n % 10) + 10) % 160000;
+            window = (window*19 + (n_ % 10) - (n % 10) + 9) % 130321;
             n = n_;
         }
     }
 
     int ans2 = 0;
-    for (int i=0; i<160000; ++i) {
+    for (int i=0; i<130321; ++i) {
         if (d[i] > ans2) {
             ans2 = d[i];
         }
