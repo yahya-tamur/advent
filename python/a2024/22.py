@@ -1,6 +1,6 @@
 from problem import get_problem, get_problem_lines, look
 from collections import defaultdict
-from time import time
+#from time import time
 #aaa = time()
 
 def step(n):
@@ -17,7 +17,7 @@ for line in get_problem_lines():
     window = 0
     for _ in range(4):
         n_ = step(n)
-        window = window*20 + ((n_ % 10) - (n % 10) + 10)
+        window = window*20 + (n_ % 10) - (n % 10)
         n = n_
 
     seen_now = set()
@@ -30,7 +30,7 @@ for line in get_problem_lines():
             seen_now.add(window)
 
         n_ = step(n)
-        window = (window*20 + ((n_ % 10) - (n % 10) + 10)) % (20 ** 4)
+        window = (window*20 + (n_ % 10) - (n % 10)) % (20 ** 4)
         n = n_
 
 #print(time() - aaa)
