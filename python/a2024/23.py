@@ -14,7 +14,6 @@ for line in get_problem_lines():
 nods = sorted(nods)
 
 cons = defaultdict(list, {k: sorted(v) for k, v in cons.items()})
-#print(*cons.items())
 
 ans = 0
 for n1 in nods:
@@ -31,16 +30,18 @@ print(f"part 1: {ans}")
 def largest_connecteds(lst):
     if not lst:
         return [set()]
-    m = 1
+    m = 0
     ans = []
     for x in lst:
         sets = largest_connecteds(set(cons[x]) & lst)
+        if len(sets[0]) + 1 < m:
+            continue
         for s in sets:
             s.add(x)
         if len(sets[0]) > m:
             ans = sets
             m = len(sets[0])
-        elif len(sets[0]) == m:
+        else:
             ans += sets
     return ans
 
