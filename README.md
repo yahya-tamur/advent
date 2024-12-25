@@ -2,7 +2,7 @@ Contents, Organization
 ---------
 This repository contains solutions to problems on adventofcode.com.
 
-It contains all of the solutions up to 2023!
+It contains all of the solutions up to 2024!
 
 Each user on the website gets a different input for each problem, and a
 'solution' consists of finding an solution for that input and submitting to the
@@ -32,9 +32,9 @@ part 1: <solution to part 1>
 part 2: <solution to part 2>
 ```
 
-I did 2022 first, then 2021 and 2023 together, then backwards from 2020. I
-switched to python a little bit after I started 2021, though there are a few
-problems in rust here and there.
+I did 2022 first, then 2021 and 2023 together, then backwards from 2020, then
+forwards from 2024. I switched to python a little bit after I started 2021,
+though there are a few problems in rust here and there.
 
 Notes for the rust folder:
 -----
@@ -85,3 +85,8 @@ commented '🌟🌟🌟' on solutions I thought were especially interesting. Run
 ```grep -r '🌟🌟🌟' .``` or equivalent from the python folder to see those
 solutions.
 
+Notes for the C folder:
+-----
+I haven't set up the downloads to work automatically, you can run the
+corresponding python solution to download the input file. As I'm writing this,
+there's only one C solution.
