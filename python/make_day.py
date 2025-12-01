@@ -8,7 +8,7 @@ if day > 25:
     print('All days made!')
     exit()
 
-f = open(f'./{day}.py', 'w')
+f = open(f'./{str(day).zfill(2)}.py', 'w')
 
 f.write("""from problem import get_problem, get_problem_lines, look
 
