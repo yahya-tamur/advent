@@ -1,4 +1,4 @@
 # better than a .sh file?
 import os
-os.system('xsel -b > input')
-print("wrote clipboard to file ./input")
+if os.system('wl-paste > input') == 0:
+    print("wrote clipboard to file ./input")

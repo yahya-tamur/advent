@@ -12,6 +12,7 @@ for i in range(2,0,-1):
     print(f"Posting part {i}\n")
     s = 0
     #look into why this is a while and not an if
+        # in case there's an if a, post this, else post this situation
     while (l := code.find(start, s)) != -1:
         ii, indent = l-1, 0
         while code[ii] == ' ':

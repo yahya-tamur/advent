@@ -11,9 +11,14 @@ print("This script makes the 'session' file and the 'inputs' directory,")
 print("then sets up the environment variables in a .env file.")
 print()
 
+if os.getcwd().split("/")[-1] != "advent":
+    print("This should be run from the root project folder.")
+    print("Are you sure you're there?")
+    print("Press Ctrl-C to quit, Enter to proceed.")
+    input()
 
-if 'inputs' not in os.listdir():
-    os.mkdir('inputs')
+if '_inputs' not in os.listdir():
+    os.mkdir('_inputs')
 
 with open('session.txt', 'w'):
     pass
@@ -21,7 +26,7 @@ with open('session.txt', 'w'):
 with open('.env', 'w') as f:
     f.write(f'P={os.getcwd()}\n')
     f.write('SESSION_FILE=${P}/session.txt\n')
-    f.write('INPUT_DIR=${P}/inputs\n')
+    f.write('INPUT_DIR=${P}/_inputs\n')
 
 print('Setup complete.')
 print()
