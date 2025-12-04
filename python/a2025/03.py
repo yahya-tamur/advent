@@ -4,13 +4,14 @@ from problem import get_problem, get_problem_lines, look
 def solve_line(line, digits):
 
     last_index = -1
-    ans = ""
+    ans = 0
 
     for d in range(digits-1, -1, -1):
-        li, i = max((line[i], -i) for i in range(last_index+1, len(line)- d))
+        li, i = max((line[i], -i) for i in range(last_index+1, len(line) - d))
         last_index = -i
-        ans += str(li)
-    return int(ans)
+        ans = 10*ans + li
+
+    return ans
 
 p1, p2 = 0, 0
 
