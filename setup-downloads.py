@@ -17,8 +17,8 @@ if os.getcwd().split("/")[-1] != "advent":
     print("Press Ctrl-C to quit, Enter to proceed.")
     input()
 
-if '_inputs' not in os.listdir():
-    os.mkdir('_inputs')
+if 'inputs' not in os.listdir():
+    os.mkdir('inputs')
 
 with open('session.txt', 'w'):
     pass
@@ -26,7 +26,7 @@ with open('session.txt', 'w'):
 with open('.env', 'w') as f:
     f.write(f'P={os.getcwd()}\n')
     f.write('SESSION_FILE=${P}/session.txt\n')
-    f.write('INPUT_DIR=${P}/_inputs\n')
+    f.write('INPUT_DIR=${P}/inputs\n')
 
 print('Setup complete.')
 print()

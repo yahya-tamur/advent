@@ -1,5 +1,5 @@
 rust/target
-_inputs
+inputs
 session.txt
 .env
 **/__pycache__/*
