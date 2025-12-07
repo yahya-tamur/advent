@@ -3,8 +3,8 @@ from collections import defaultdict
 
 lines = [{i for i, c in enumerate(line) if c != '.'} for line in get_problem_lines()]
 
-beams = {c : 1 for c in lines[0]}
-print(beams)
+beams = defaultdict(int)
+beams[lines[0].pop()] = 1
 
 p1 = 0
 for i in range(1, len(lines)):
