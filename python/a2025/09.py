@@ -31,7 +31,6 @@ for i in range(1, len(points)):
     points_[xs[i][1]] += x
     y += 2j*(ys[i][0] != ys[i-1][0])
     points_[ys[i][1]] += y
-print("shrunk")
 
 # draw border
 area = set()
@@ -55,8 +54,8 @@ while stack:
         if z+d not in area:
             stack.append(z+d)
 
-area = {(int(z.real), int(z.imag)) for z in area}
-points_ = [(int(z.real), int(z.imag)) for z in points_]
+area = {(int(z.real)//2, int(z.imag)//2) for z in area}
+points_ = [(int(z.real)//2, int(z.imag)//2) for z in points_]
 
 # brute force
 p2 = 0
@@ -65,7 +64,6 @@ for j in range(len(points_)):
         x0, x1 = sorted((points_[i][0], points_[j][0]))
         y0, y1 = sorted((points_[i][1], points_[j][1]))
         if all(((x, y) in area for x in range(x0, x1+1) for y in range(y0, y1+1))):
-            # admissable
             p2 = max(p2, (1+abs(points[i][0] - points[j][0]))*(1+abs(points[i][1] - points[j][1])))
 
 print(f"part 2: {p2}")
