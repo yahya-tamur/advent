@@ -1,5 +1,8 @@
 from common.init_injection import get_year_day
 
+print("FIX THIS THEN USE!!")
+exit()
+
 year, day, _ = get_year_day()
 
 day += 1
