@@ -1,32 +1,35 @@
 from problem import get_problem, get_problem_lines, look
 import numpy as np
+from scipy.sparse import coo_array
+from collections import defaultdict
+from time import time
 
-labels = set(eval('"'+get_problem().replace(': ',',').replace(' ',',') \
-        .replace('\n',',').replace(',','","')+'"')) - {''}
-
-ix = {l : i for i, l in enumerate(labels)}
+ix = defaultdict(lambda:len(ix))
 
 # make adjecency matrix
-a = np.zeros((len(labels), len(labels)))
+row, col, data = [], [], []
 
 for line in get_problem_lines():
-    l, r = line.split(': ')
-    for rr in r.split(' '):
-        a[ix[l]][ix[rr]] += 1
+    l, rr = line.split(': ')
+    for r in rr.split(' '):
+        row.append(ix[l])
+        col.append(ix[r])
+        data.append(1)
+
+a = coo_array((data, (row, col)), shape=(len(ix), len(ix)))
 
 # make path matrix
-ii = np.identity(len(labels))
 a_2_n = a.copy()
-paths = a.copy() + ii
+paths = a.copy()
 
-while a_2_n.any():
+while a_2_n.sum():
+    paths += a_2_n @ paths
     a_2_n = a_2_n @ a_2_n
-    paths = (a_2_n + ii) @ paths
 
 # just to make final expression more compact
 from math import prod
 
-p = lambda a,b: int(paths[ix[a]][ix[b]])
+p = lambda a,b: int(paths[ix[a], ix[b]])
 pp = lambda l:prod(p(l[i],l[i+1]) for i in range(len(l)-1))
 
 print(f"part 1: {p('you','out')}")
