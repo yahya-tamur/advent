@@ -4,36 +4,36 @@ import numpy as np
 
 gates = defaultdict(list)
 
+labels = set()
+for line in get_problem_lines():
+    l, r = line.split(': ')
+    labels.add(l)
+    for rr in r.split(' '):
+        labels.add(rr)
+
+ix = {l : i for i, l in enumerate(labels)}
+
+# make adjecency matrix
+a = np.zeros((len(labels), len(labels)))
+
 for line in get_problem_lines():
     l, r = line.split(': ')
     for rr in r.split(' '):
-        gates[l].append(rr)
+        a[ix[l]][ix[rr]] += 1
 
-labels = set(gates)
-for r in gates.values():
-    labels |= set(r)
-
-labels = list(labels)
-colabels = {l : i for i, l in enumerate(labels)}
-
-a = np.zeros((len(labels), len(labels)))
-
-for l in gates:
-    for r in gates[l]:
-        a[colabels[l]][colabels[r]] = 1
-
+# make path matrix
 acc = a.copy()
 paths = a.copy()
 
-i = 0
 while acc.any():
-    print(i)
     acc = acc @ a
     paths += acc
-    i += 1
 
-cl = colabels
+# just to make final expression more compact
+from math import prod
 
-p2 = paths[cl['svr']][cl['dac']]*paths[cl['dac'],cl['fft']]*paths[cl['fft'],cl['out']] + \
-        paths[cl['svr'], cl['fft']]*paths[cl['fft'],cl['dac']]*paths[cl['dac'],cl['out']]
-print(f"part 2: {int(p2)}")
+p = lambda a,b: int(paths[ix[a]][ix[b]])
+pp = lambda l:prod(p(l[i],l[i+1]) for i in range(len(l)-1))
+
+print(f"part 1: {p('you','out')}")
+print(f"part 2: {pp(('svr','dac','fft','out'))+pp(('svr','fft','dac','out'))}")
