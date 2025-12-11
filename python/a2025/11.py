@@ -1,8 +1,5 @@
 from problem import get_problem, get_problem_lines, look
-from collections import defaultdict
 import numpy as np
-
-gates = defaultdict(list)
 
 labels = set(eval('"'+get_problem().replace(': ',',').replace(' ',',') \
         .replace('\n',',').replace(',','","')+'"')) - {''}
