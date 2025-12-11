@@ -22,12 +22,13 @@ for line in get_problem_lines():
         a[ix[l]][ix[rr]] += 1
 
 # make path matrix
-acc = a.copy()
-paths = a.copy()
+ii = np.identity(len(labels))
+a_2_n = a.copy()
+paths = a.copy() + ii
 
-while acc.any():
-    acc = acc @ a
-    paths += acc
+while a_2_n.any():
+    a_2_n = a_2_n @ a_2_n
+    paths = (a_2_n + ii) @ paths
 
 # just to make final expression more compact
 from math import prod
