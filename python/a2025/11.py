@@ -4,12 +4,8 @@ import numpy as np
 
 gates = defaultdict(list)
 
-labels = set()
-for line in get_problem_lines():
-    l, r = line.split(': ')
-    labels.add(l)
-    for rr in r.split(' '):
-        labels.add(rr)
+labels = set(eval('"'+get_problem().replace(': ',',').replace(' ',',') \
+        .replace('\n',',').replace(',','","')+'"')) - {''}
 
 ix = {l : i for i, l in enumerate(labels)}
 
