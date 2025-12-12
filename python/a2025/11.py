@@ -4,6 +4,7 @@ from scipy.sparse import coo_array
 from collections import defaultdict
 from time import time
 
+start = time()
 ix = defaultdict(lambda:len(ix))
 
 # make adjecency matrix
@@ -34,3 +35,4 @@ pp = lambda l:prod(p(l[i],l[i+1]) for i in range(len(l)-1))
 
 print(f"part 1: {p('you','out')}")
 print(f"part 2: {pp(('svr','dac','fft','out'))+pp(('svr','fft','dac','out'))}")
+print(time() - start)

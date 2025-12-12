@@ -1,13 +1,17 @@
 from common.init_injection import get_year_day
+import os
 
-print("FIX THIS THEN USE!!")
-exit()
 
-year, day, _ = get_year_day()
+year, _day, _ = get_year_day()
+year = int(year)
 
-day += 1
+day = 1
 
-if day > 25:
+while f"{str(day).zfill(2)}.py" in os.listdir('.'):
+    day += 1
+
+
+if (year < 2025 and day > 25) or (year >= 2025 and day > 12):
     print('All days made!')
     exit()
 
